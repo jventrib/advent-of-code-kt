@@ -1,6 +1,5 @@
 plugins {
     kotlin("jvm") version "1.6.0"
-    java
 }
 
 repositories {
@@ -8,14 +7,6 @@ repositories {
 }
 
 tasks {
-    sourceSets {
-        main {
-            java.srcDirs("src")
-        }
-        test {
-            java.srcDirs("test")
-        }
-    }
     test {
         useJUnitPlatform()
     }
