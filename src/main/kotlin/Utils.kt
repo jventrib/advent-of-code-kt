@@ -1,7 +1,7 @@
 import java.io.File
 import java.math.BigInteger
 import java.security.MessageDigest
-
+typealias IOFun<E> = List<String>.() -> E
 /**
  * Reads lines from the given input txt file.
  */
@@ -34,20 +34,20 @@ class Day<E>(private val dayNumber: Int) {
     lateinit var part2: Part<E>
     lateinit var part2Example: Part<E>
 
-    fun part1(block: List<String>.() -> E): Part<E> {
+    fun part1(block: IOFun<E>): Part<E> {
         part1 = Part(dayNumber,false, block)
         part1Example = Part(dayNumber,true, block)
         return part1
     }
 
-    fun part2(block: List<String>.() -> E): Part<E> {
+    fun part2(block: IOFun<E>): Part<E> {
         part2 = Part(dayNumber,false, block)
         part2Example = Part(dayNumber,true, block)
         return part2
     }
 }
 
-class Part<E>(private val dayNumber: Int, example: Boolean, private val block: List<String>.() -> E) {
+class Part<E>(private val dayNumber: Int, example: Boolean, private val block: IOFun<E>) {
     private val fileName = if (example) "input_example.txt" else "input.txt"
     val output get() = doPart(dayNumber, fileName, part = block)
     override fun toString(): String {
