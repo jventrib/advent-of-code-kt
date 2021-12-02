@@ -5,7 +5,7 @@ import java.security.MessageDigest
 /**
  * Reads lines from the given input txt file.
  */
-fun readInput(day: Int, name: String="input.txt") = File("src/main/resources/d${day}/$name").readLines()
+fun readInput(day: Int, name: String = "input.txt") = File("src/main/resources/d${day}/$name").readLines()
 
 /**
  * Converts string to md5 hash.
@@ -13,10 +13,46 @@ fun readInput(day: Int, name: String="input.txt") = File("src/main/resources/d${
 fun String.md5(): String = BigInteger(1, MessageDigest.getInstance("MD5").digest(toByteArray())).toString(16)
 
 
-fun <R> part(day: Int, fileName: String = "input.txt", part: List<String>.() -> R): R {
+fun <R> doPart(day: Int, fileName: String = "input.txt", part: List<String>.() -> R): R {
     val input = readInput(day, fileName)
     println("input: $input")
     val output = part(input)
     println("output: $output")
     return output
+}
+
+fun <E> day(dayNumber: Int, block: Day<E>.() -> Unit): Day<E> {
+    val day = Day<E>(dayNumber)
+    day.block()
+    return day
+}
+
+
+class Day<E>(private val dayNumber: Int) {
+    lateinit var part1: Part<E>
+    lateinit var part1Example: Part<E>
+    lateinit var part2: Part<E>
+    lateinit var part2Example: Part<E>
+
+    fun part1(block: List<String>.() -> E): Part<E> {
+        part1 = Part(dayNumber,false, block)
+        part1Example = Part(dayNumber,true, block)
+        return part1
+    }
+
+    fun part2(block: List<String>.() -> E): Part<E> {
+        part2 = Part(dayNumber,false, block)
+        part2Example = Part(dayNumber,true, block)
+        return part2
+    }
+}
+
+class Part<E>(private val dayNumber: Int, example: Boolean, private val block: List<String>.() -> E) {
+    private val fileName = if (example) "input_example.txt" else "input.txt"
+    val output get() = doPart(dayNumber, fileName, part = block)
+    override fun toString(): String {
+        return "Part(output=$output)"
+    }
+
+
 }
