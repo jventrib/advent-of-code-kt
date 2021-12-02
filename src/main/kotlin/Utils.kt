@@ -1,7 +1,9 @@
 import java.io.File
 import java.math.BigInteger
 import java.security.MessageDigest
+
 typealias IOFun<E> = List<String>.() -> E
+
 /**
  * Reads lines from the given input txt file.
  */
@@ -28,26 +30,26 @@ fun <E> day(dayNumber: Int, block: Day<E>.() -> Unit): Day<E> {
 }
 
 
-class Day<E>(private val dayNumber: Int) {
+class Day<E>(val dayNumber: Int) {
     lateinit var part1: Part<E>
     lateinit var part1Example: Part<E>
     lateinit var part2: Part<E>
     lateinit var part2Example: Part<E>
 
-    fun part1(block: IOFun<E>): Part<E> {
-        part1 = Part(dayNumber,false, block)
-        part1Example = Part(dayNumber,true, block)
+    fun part1(expectedExample: E, expected: E? = null, block: IOFun<E>): Part<E> {
+        part1 = Part(dayNumber, false, expected, block)
+        part1Example = Part(dayNumber, true, expectedExample, block)
         return part1
     }
 
-    fun part2(block: IOFun<E>): Part<E> {
-        part2 = Part(dayNumber,false, block)
-        part2Example = Part(dayNumber,true, block)
+    fun part2(expectedExample: E, expected: E? = null, block: IOFun<E>): Part<E> {
+        part2 = Part(dayNumber, false, expected, block)
+        part2Example = Part(dayNumber, true, expectedExample, block)
         return part2
     }
 }
 
-class Part<E>(private val dayNumber: Int, example: Boolean, private val block: IOFun<E>) {
+class Part<E>(private val dayNumber: Int, example: Boolean, val expected: E?, private val block: IOFun<E>) {
     private val fileName = if (example) "input_example.txt" else "input.txt"
     val output get() = doPart(dayNumber, fileName, part = block)
     override fun toString(): String {
@@ -56,3 +58,5 @@ class Part<E>(private val dayNumber: Int, example: Boolean, private val block: I
 
 
 }
+
+val days = listOf(day1, day2)
