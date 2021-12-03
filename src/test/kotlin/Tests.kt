@@ -5,7 +5,7 @@ import org.junit.jupiter.api.TestFactory
 class Tests {
 
     @TestFactory
-    fun oneDayTest() = dayTest(day1)
+    fun oneDayTest() = dayTest(day3)
 
     @Suppress("UselessCallOnCollection")
     @TestFactory
