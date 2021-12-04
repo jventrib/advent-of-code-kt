@@ -59,4 +59,4 @@ class Part<E>(private val dayNumber: Int, example: Boolean, val expected: E?, pr
 
 }
 
-val days = listOf(day1, day2, day3)
+val days = listOf(day1, day2, day3, day4)
