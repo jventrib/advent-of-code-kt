@@ -27,10 +27,10 @@ val day4 = day<Int>(4) {
             boards.forEach { b -> b.markCell(number) } //Mark each board
             boards.filter(Board::hasWin).let { newWinners ->
                 newWinners.forEach { it.saveWinningCells(number) }
-                number to newWinners
+                newWinners
             } //Look for a winner
         }
-        val (_, lastWinners) = winners.filterNot { it.second.isEmpty() }.last()
+        val lastWinners = winners.filterNot { it.isEmpty() }.last()
 
         check(boards.all { it.cells.size == 25 })
 
