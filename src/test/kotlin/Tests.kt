@@ -8,13 +8,13 @@ class Tests {
     @Test
     fun todayTest() {
         val d = day4
-        val p = "Day ${d.dayNumber} - Part1"
+        val p = "Day ${d.dayNumber} - Part2"
 
         println(p)
-        if (d.part1.expected != null)
-            Assertions.assertEquals(d.part1.expected, d.part1.output)
+        if (d.part2.expected != null)
+            Assertions.assertEquals(d.part2.expected, d.part2.output)
         else
-            d.part1.output
+            d.part2.output
 
     }
 
