@@ -36,15 +36,15 @@ class Day<E>(val dayNumber: Int) {
     lateinit var part2: Part<E>
     lateinit var part2Example: Part<E>
 
-    fun part1(expectedExampleOutput: E, expected: E? = null, block: IOFun<E>): Part<E> {
-        part1 = Part(dayNumber, false, expected, block)
+    fun part1(expectedExampleOutput: E, expectedOutput: E? = null, block: IOFun<E>): Part<E> {
+        part1 = Part(dayNumber, false, expectedOutput, block)
         part1Example = Part(dayNumber, true, expectedExampleOutput, block)
         return part1
     }
 
-    fun part2(expectedExample: E, expected: E? = null, block: IOFun<E>): Part<E> {
-        part2 = Part(dayNumber, false, expected, block)
-        part2Example = Part(dayNumber, true, expectedExample, block)
+    fun part2(expectedExampleOutput: E, expectedOutput: E? = null, block: IOFun<E>): Part<E> {
+        part2 = Part(dayNumber, false, expectedOutput, block)
+        part2Example = Part(dayNumber, true, expectedExampleOutput, block)
         return part2
     }
 }
