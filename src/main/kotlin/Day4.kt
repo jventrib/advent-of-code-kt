@@ -5,7 +5,6 @@ val day4 = day<Int>(4) {
         val numbers = initNumbers()
         val boards = initBoards()
 
-
         //run the game
         val (number, winner) = numbers.firstNotNullOf { number ->
             boards.forEach { b -> b.markCell(number) } //Mark each board
@@ -31,7 +30,6 @@ val day4 = day<Int>(4) {
             } //Look for a winner
         }
         val lastWinners = winners.filterNot { it.isEmpty() }.last()
-
         check(boards.all { it.cells.size == 25 })
 
         //calculate winner score
