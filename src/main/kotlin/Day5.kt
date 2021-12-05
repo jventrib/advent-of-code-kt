@@ -39,19 +39,13 @@ data class Matrix(val points: MutableList<Int>) {
         when {
             withDiag && line.a.x != line.b.x && line.a.y != line.b.y -> {
                 val yRange = getYRange(line)
-                getXRange(line).forEachIndexed { index, it ->
-                    points[index(it, yRange.elementAt(index))]++
-                }
+                getXRange(line).forEachIndexed { index, it -> points[index(it, yRange.elementAt(index))]++ }
             }
             line.a.y == line.b.y -> {
-                getXRange(line).forEach {
-                    points[index(it, line.a.y)]++
-                }
+                getXRange(line).forEach { points[index(it, line.a.y)]++ }
             }
             line.a.x == line.b.x -> {
-                getYRange(line).forEach {
-                    points[index(line.a.x, it)]++
-                }
+                getYRange(line).forEach { points[index(line.a.x, it)]++ }
             }
         }
     }
