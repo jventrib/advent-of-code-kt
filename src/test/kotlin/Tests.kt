@@ -6,21 +6,20 @@ import org.junit.jupiter.api.TestFactory
 class Tests {
 
     @Test
-    fun todayTest() {
-        val d = day4
-        val p = "Day ${d.dayNumber} - Part2"
+    fun todayPart1Example() {
+        val d = day5
+        val p = "Day ${d.dayNumber} - Part1Example"
 
         println(p)
-        if (d.part2.expected != null)
-            Assertions.assertEquals(d.part2.expected, d.part2.output)
+        if (d.part1Example.expected != null)
+            Assertions.assertEquals(d.part1Example.expected, d.part1Example.output)
         else
-            d.part2.output
-
+            d.part1Example.output
     }
 
 
     @TestFactory
-    fun oneDayTest() = dayTest(day4)
+    fun oneDayTest() = dayTest(day5)
 
     @Suppress("UselessCallOnCollection")
     @TestFactory
