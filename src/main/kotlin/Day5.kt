@@ -52,8 +52,6 @@ fun getLinePoints(line: Line, withDiag: Boolean): List<Point> {
     }
 }
 
-
-
 data class Line(val a: Point, val b: Point, val count: Int = 0) {
     override fun toString(): String {
         return "Line(start=[${a.x},${a.y}], end=[${b.x},${b.y}], count=$count)"
