@@ -7,7 +7,7 @@ class Tests {
 
     @Test
     fun todayPart1Example() {
-        val d = day5
+        val d = day6
         val p = "Day ${d.dayNumber} - Part1Example"
 
         println(p)
@@ -19,15 +19,15 @@ class Tests {
 
 
     @TestFactory
-    fun oneDayTest() = dayTest(day5)
+    fun oneDayTest() = dayTest(day6)
 
-    @Suppress("UselessCallOnCollection")
-    @TestFactory
-    fun allTests() = days
-        .filterNotNull()
-        .flatMap { d -> dayTest(d) }
+//    @Suppress("UselessCallOnCollection")
+//    @TestFactory
+//    fun allTests() = days
+//        .filterNotNull()
+//        .flatMap { d -> dayTest(d) }
 
-    private fun dayTest(d: Day<Int>): List<DynamicTest> {
+    private fun dayTest(d: Day<Long>): List<DynamicTest> {
         val p1e = "Day ${d.dayNumber} - Part1Example"
         val p1 = "Day ${d.dayNumber} - Part1"
         val p2e = "Day ${d.dayNumber} - Part2Example"

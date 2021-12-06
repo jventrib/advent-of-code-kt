@@ -1,6 +1,8 @@
 import java.io.File
 import java.math.BigInteger
 import java.security.MessageDigest
+import kotlin.system.measureTimeMillis
+import kotlin.time.Duration
 
 typealias IOFun<E> = List<String>.() -> E
 
@@ -18,8 +20,11 @@ fun String.md5(): String = BigInteger(1, MessageDigest.getInstance("MD5").digest
 fun <R> doPart(day: Int, fileName: String = "input.txt", part: List<String>.() -> R): R {
     val input = readInput(day, fileName)
     println("input: $input")
+    val start = System.currentTimeMillis()
     val output = part(input)
+    val elapsed = System.currentTimeMillis() - start
     println("output: $output")
+    println("time: ${elapsed}ms")
     return output
 }
 
@@ -59,4 +64,4 @@ class Part<E>(private val dayNumber: Int, example: Boolean, val expected: E?, pr
 
 }
 
-val days = listOf(day1, day2, day3, day4, day5)
+val days = listOf(day1, day2, day3, day4, day5, day6)
