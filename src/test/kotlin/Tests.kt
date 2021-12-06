@@ -17,6 +17,18 @@ class Tests {
             d.part1Example.output
     }
 
+    @Test
+    fun todayPart2Example() {
+        val d = day6
+        val p = "Day ${d.dayNumber} - Part2Example"
+
+        println(p)
+        if (d.part2Example.expected != null)
+            Assertions.assertEquals(d.part2Example.expected, d.part2Example.output)
+        else
+            d.part2Example.output
+    }
+
 
     @TestFactory
     fun oneDayTest() = dayTest(day6)
