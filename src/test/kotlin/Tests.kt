@@ -5,41 +5,50 @@ import org.junit.jupiter.api.TestFactory
 
 class Tests {
 
+    val day = day7
+
     @Test
     fun todayPart1Example() {
-        val d = day6
-        val p = "Day ${d.dayNumber} - Part1Example"
+        dayPartTest(day, { part1Example }, "Part1Example")
+    }
 
-        println(p)
-        if (d.part1Example.expected != null)
-            Assertions.assertEquals(d.part1Example.expected, d.part1Example.output)
-        else
-            d.part1Example.output
+    @Test
+    fun todayPart1() {
+        dayPartTest(day, { part1 }, "Part1")
     }
 
     @Test
     fun todayPart2Example() {
-        val d = day6
-        val p = "Day ${d.dayNumber} - Part2Example"
+        dayPartTest(day, { part2Example }, "Part2Example")
+    }
+
+    @Test
+    fun todayPart2() {
+        dayPartTest(day, { part2 }, "Part2")
+    }
+
+
+    private fun <E> dayPartTest(d: Day<E>, part: Day<E>.() -> Part<E>, label: String) {
+        val p = "Day ${d.dayNumber} - $label"
 
         println(p)
-        if (d.part2Example.expected != null)
-            Assertions.assertEquals(d.part2Example.expected, d.part2Example.output)
+        if (d.part().expected != null)
+            Assertions.assertEquals(d.part().expected, d.part().output)
         else
-            d.part2Example.output
+            d.part().output
     }
 
 
     @TestFactory
-    fun oneDayTest() = dayTest(day6)
+    fun oneDayTest() = dayTest(day)
 
-//    @Suppress("UselessCallOnCollection")
-//    @TestFactory
-//    fun allTests() = days
-//        .filterNotNull()
-//        .flatMap { d -> dayTest(d) }
+    @Suppress("UselessCallOnCollection")
+    @TestFactory
+    fun allTests() = days
+        .filterNotNull()
+        .flatMap { d -> dayTest(d) }
 
-    private fun dayTest(d: Day<Long>): List<DynamicTest> {
+    private fun <E> dayTest(d: Day<E>): List<DynamicTest> {
         val p1e = "Day ${d.dayNumber} - Part1Example"
         val p1 = "Day ${d.dayNumber} - Part1"
         val p2e = "Day ${d.dayNumber} - Part2Example"

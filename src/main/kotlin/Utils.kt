@@ -11,6 +11,9 @@ typealias IOFun<E> = List<String>.() -> E
  */
 fun readInput(day: Int, name: String = "input.txt") = File("src/main/resources/d${day}/$name").readLines()
 
+
+fun List<String>.parseLineToIntList() = first().split(",").map(String::toInt)
+
 /**
  * Converts string to md5 hash.
  */
@@ -64,4 +67,4 @@ class Part<E>(private val dayNumber: Int, example: Boolean, val expected: E?, pr
 
 }
 
-val days = listOf(day1, day2, day3, day4, day5, day6)
+val days = listOf(day1, day2, day3, day4, day5, day6, day7)
