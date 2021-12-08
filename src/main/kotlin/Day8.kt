@@ -53,7 +53,7 @@ private fun getSegments(entry: Entry): List<SegmentSet> {
     return s.entries.sortedBy { it.key }.map { it.value }.toList()
 }
 
-private fun String.enumSet() = EnumSet.copyOf(map { Segment.valueOf(it.toString()) })
+private fun String.enumSet() = EnumSet.copyOf(map { Segment.valueOf(it.uppercase()) })
 
 private fun List<SegmentSet>?.filterContains(s1: SegmentSet?): List<SegmentSet> =
     this!!.filter { c -> c.containsAll(s1!!) }
@@ -64,5 +64,5 @@ private fun List<SegmentSet>?.filterNotContains(s1: SegmentSet?): List<SegmentSe
 private fun Map<Int, List<SegmentSet>>.g(key: Int) = this[key]!!
 
 data class Entry(val signals: List<String>, val output: List<String>)
-enum class Segment { a, b, c, d, e, f, g }
+enum class Segment { A, B, C, D, E, F, G }
 
