@@ -1,4 +1,4 @@
-typealias Point = Int
+private typealias VPoint = Int
 
 const val WIDTH = 1000
 val day5 = day<Int>(5) {
@@ -30,13 +30,13 @@ private fun List<String>.doPart(withDiag: Boolean): Int {
         .count { it.value.size > 1 }
 }
 
-private fun index(x: Point, y: Point) = y * WIDTH + x
-private val Point.x get() = this % WIDTH
-private val Point.y get() = this / WIDTH
+private fun index(x: VPoint, y: VPoint) = y * WIDTH + x
+private val VPoint.x get() = this % WIDTH
+private val VPoint.y get() = this / WIDTH
 private fun getYRange(line: Line) = if (line.a.y > line.b.y) line.a.y downTo line.b.y else line.a.y..line.b.y
 private fun getXRange(line: Line) = if (line.a.x > line.b.x) line.a.x downTo line.b.x else line.a.x..line.b.x
 
-fun getLinePoints(line: Line, withDiag: Boolean): List<Point> {
+fun getLinePoints(line: Line, withDiag: Boolean): List<VPoint> {
     return when {
         withDiag && line.a.x != line.b.x && line.a.y != line.b.y -> {
             val yRange = getYRange(line)
@@ -52,7 +52,7 @@ fun getLinePoints(line: Line, withDiag: Boolean): List<Point> {
     }
 }
 
-data class Line(val a: Point, val b: Point, val count: Int = 0) {
+data class Line(val a: VPoint, val b: VPoint, val count: Int = 0) {
     override fun toString(): String {
         return "Line(start=[${a.x},${a.y}], end=[${b.x},${b.y}], count=$count)"
     }
