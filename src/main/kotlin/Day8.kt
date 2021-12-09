@@ -34,23 +34,22 @@ val day8 = day<Int>(8) {
 }
 
 private fun getSegments(entry: Entry): List<SegmentSet> {
-    val signalByLength: Map<Int, List<SegmentSet>> =
+    val signalsByLength: Map<Int, List<SegmentSet>> =
         entry.signals.groupBy { it.length }.mapValues { it.value.map { it.enumSet() } }
-    val s = mutableMapOf<Int, SegmentSet>()
-    s[1] = signalByLength[2]!!.first()
-    s[4] = signalByLength[4]!!.first()
-    s[7] = signalByLength[3]!!.first()
-    s[8] = signalByLength[7]!!.first()
+    val s = MutableList<SegmentSet>(10) { EnumSet.noneOf(Segment::class.java)}
+    s[1] = signalsByLength[2]!!.first()
+    s[4] = signalsByLength[4]!!.first()
+    s[7] = signalsByLength[3]!!.first()
+    s[8] = signalsByLength[7]!!.first()
 
-    s[9] = signalByLength[6].filterContains(s[1]).filterContains(s[4]!!).first()
-    s[0] = signalByLength[6].filterContains(s[1]).filterNotContains(s[4]).first()
-    s[6] = signalByLength[6].filterNotContains(s[1]).first()
+    s[9] = signalsByLength[6].filterContains(s[4]).first()
+    s[0] = signalsByLength[6].filterContains(s[1]).filterNotContains(s[4]).first()
+    s[6] = signalsByLength[6].filterNotContains(s[1]).first()
 
-    s[3] = signalByLength[5].filterContains(s[1]).first()
-    s[5] = signalByLength[5].filterNotContains(s[1]).first { c -> s[6]!!.containsAll(c) }
-    s[2] = signalByLength[5].filterNotContains(s[3]).filterNotContains(s[5]).first()
-
-    return s.entries.sortedBy { it.key }.map { it.value }.toList()
+    s[3] = signalsByLength[5].filterContains(s[1]).first()
+    s[5] = signalsByLength[5].filterNotContains(s[1]).first { c -> s[6].containsAll(c) }
+    s[2] = signalsByLength[5].filterNotContains(s[3]).filterNotContains(s[5]).first()
+    return s
 }
 
 private fun String.enumSet() = EnumSet.copyOf(map { Segment.valueOf(it.uppercase()) })
