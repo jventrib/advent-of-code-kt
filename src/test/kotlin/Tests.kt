@@ -5,7 +5,7 @@ import org.junit.jupiter.api.TestFactory
 
 class Tests {
 
-    val day = day10
+    val day = day11
 
     @Test
     fun todayPart1Example() {
