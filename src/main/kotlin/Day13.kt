@@ -39,15 +39,9 @@ private fun Iterable<Point>.draw(width: Int, height: Int) {
 private fun getFoldedPoints(
     points: Set<Point>,
     foldPoint: Pair<String, Int>
-): Set<Point> {
-    val foldPos = foldPoint.second
-    val axe: (Point) -> Int = if (foldPoint.first == "x") Point::x else Point::y
-    val foldedPoints = points
-        .filter { axe(it) > foldPos }
-        .map {
-            if (foldPoint.first == "x") Point(2 * foldPos - axe(it), it.y)
-            else Point(it.x, 2 * foldPos - axe(it))
-        }
-        .toSet()
-    return (points + foldedPoints).filter { axe(it) < foldPos }.toSet()
+) = foldPoint.second.let { foldPos ->
+    points.map {
+        if (foldPoint.first == "x") Point(if (it.x > foldPos) (2 * foldPos - it.x) else it.x, it.y)
+        else Point(it.x, if (it.y > foldPos) (2 * foldPos - it.y) else it.y)
+    }.toSet()
 }
