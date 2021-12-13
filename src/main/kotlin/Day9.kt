@@ -4,7 +4,7 @@ val day9 = day<Int>(9) {
         val width = matrix.maxOf { it.size }
         val height = matrix.size
         val lowPoints = getLowPoints(matrix, width, height)
-        lowPoints.sumOf { it.z + 1 }
+        lowPoints.sumOf { it.value + 1 }
     }
 
     part2(expectedExampleOutput = 1134, expectedOutput = 959136) {
@@ -23,7 +23,7 @@ private fun fillBasin(basin: Basin, matrix: List<List<Int>>, width: Int, height:
     val oldSize = basin.points.size
     val newPoints = basin.points.fold(basin.points) { acc, point ->
         val newInBasin = getNeighbors(matrix, width, height, point.x, point.y)
-            .filter { n -> n.z != 9 }
+            .filter { n -> n.value != 9 }
         acc + newInBasin
     }
     val newBasin = basin.copy(points = newPoints)
@@ -35,7 +35,7 @@ private fun getLowPoints(matrix: List<List<Int>>, width: Int, height: Int): List
     matrix.foldIndexed(listOf()) { y, acc, cols ->
         acc + cols.foldIndexed(listOf()) { x, colsAcc, cur ->
             val neighbors = getNeighbors(matrix, width, height, x, y)
-            val min = neighbors.minOf { it.z }
+            val min = neighbors.minOf { it.value }
             if (cur < min) {
                 colsAcc + Point(x, y, cur)
             } else colsAcc
@@ -56,5 +56,4 @@ private fun getNeighbors(matrix: List<List<Int>>, width: Int, height: Int, x: In
     }
 }
 
-private data class Point(val x: Int, val y: Int, val z: Int)
 private data class Basin(val lowPoint: Point, val points: Set<Point>)
