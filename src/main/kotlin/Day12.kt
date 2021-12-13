@@ -54,7 +54,6 @@ private fun getTargets(group: Map<Cave, List<Cave>>, path: Path, onceForSmall: B
 
 private fun Cave.isLowerCase() = s.lowercase() == s
 
-
 @JvmInline
 value class Cave(val s: String) {
     override fun toString(): String {
