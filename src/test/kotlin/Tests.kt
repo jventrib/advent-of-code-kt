@@ -49,10 +49,10 @@ class Tests {
         .flatMap { d -> dayTest(d) }
 
     private fun <E> dayTest(d: Day<E>): List<DynamicTest> {
-        val p1e = "Day ${d.dayNumber} - Part1Example"
-        val p1 = "Day ${d.dayNumber} - Part1"
-        val p2e = "Day ${d.dayNumber} - Part2Example"
-        val p2 = "Day ${d.dayNumber} - Part2"
+        val p1e = "Day ${d.dayNumber.pad()} - Part1Example"
+        val p1 = "Day ${d.dayNumber.pad()} - Part1"
+        val p2e = "Day ${d.dayNumber.pad()} - Part2Example"
+        val p2 = "Day ${d.dayNumber.pad()} - Part2"
         return listOf(
             DynamicTest.dynamicTest(p1e) {
                 println(p1e)
@@ -117,3 +117,5 @@ class Tests {
     }
 
 }
+
+private fun Int.pad() = this.toString().padStart(2, '0')

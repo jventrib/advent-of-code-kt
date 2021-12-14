@@ -1,7 +1,7 @@
 import java.util.*
 typealias SegmentSet = EnumSet<Segment>
 
-val day8 = day<Int>(8) {
+val day08 = day<Int>(8) {
     part1(expectedExampleOutput = 26, expectedOutput = 255) {
         val entries = map { l ->
             l.split("|").let { Entry(it.first().trim().split(" "), it.last().trim().split(" ")) }

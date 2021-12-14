@@ -1,4 +1,4 @@
-val day9 = day<Int>(9) {
+val day09 = day<Int>(9) {
     part1(expectedExampleOutput = 15, expectedOutput = 560) {
         val matrix = this.map { it.toCharArray().toList().map(Char::digitToInt) }
         val width = matrix.maxOf { it.size }

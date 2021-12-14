@@ -1,7 +1,7 @@
 private typealias VPoint = Int
 
 const val WIDTH = 1000
-val day5 = day<Int>(5) {
+val day05 = day<Int>(5) {
     part1(expectedExampleOutput = 5, expectedOutput = 5084) {
         doPart(withDiag = false)
     }

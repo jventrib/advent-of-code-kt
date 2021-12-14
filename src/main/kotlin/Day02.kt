@@ -1,4 +1,4 @@
-val day2 = day<Int>(2) {
+val day02 = day<Int>(2) {
     part1(150) {
         val ops = this.map { it.split(" ").run { Command(get(0), get(1).toInt()) } }
             .groupingBy { it.type }.fold(0) { acc, e -> acc + e.amount }

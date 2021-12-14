@@ -1,6 +1,6 @@
 import java.util.*
 
-val day6 = day<Long>(6) {
+val day06 = day<Long>(6) {
     part1(expectedExampleOutput = 5934, expectedOutput = 374927) {
         doPart(80)
     }

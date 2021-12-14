@@ -1,4 +1,4 @@
-val day1 = day<Int>(1) {
+val day01 = day<Int>(1) {
     part1(7) {
         this.map { it.toInt() }.zipWithNext().count { it.first < it.second }
     }

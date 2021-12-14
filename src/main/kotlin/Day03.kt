@@ -1,4 +1,4 @@
-val day3 = day<Int>(3) {
+val day03 = day<Int>(3) {
     part1(198) {
         val range = 0 until 5
         val gamma = range.map { pos ->

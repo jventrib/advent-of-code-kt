@@ -1,15 +1,14 @@
 import java.io.File
 import java.math.BigInteger
 import java.security.MessageDigest
-import kotlin.system.measureTimeMillis
-import kotlin.time.Duration
 
 typealias IOFun<E> = List<String>.() -> E
 
 /**
  * Reads lines from the given input txt file.
  */
-fun readInput(day: Int, name: String = "input.txt") = File("src/main/resources/d${day}/$name").readLines()
+fun readInput(day: Int, name: String = "input.txt") =
+    File("src/main/resources/d${day.toString().padStart(2, '0')}/$name").readLines()
 
 
 fun List<String>.parseLineToIntList() = first().split(",").map(String::toInt)
@@ -67,5 +66,6 @@ class Part<E>(private val dayNumber: Int, example: Boolean, val expected: E?, pr
 
 }
 
-val days = listOf(day1, day2, day3, day4, day5, day6, day7, day8, day9, day10, day11, day12, day13, day14)
+val days = listOf(day01, day02, day03, day04, day05, day06, day07, day08, day09, day10, day11, day12, day13, day14)
+
 data class Point(val x: Int, val y: Int, val value: Int = 0)

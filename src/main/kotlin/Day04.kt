@@ -1,6 +1,6 @@
 import java.util.regex.Pattern
 
-val day4 = day<Int>(4) {
+val day04 = day<Int>(4) {
     part1(4512) {
         val numbers = initNumbers()
         val boards = initBoards()
