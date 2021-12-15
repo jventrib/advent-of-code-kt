@@ -5,10 +5,12 @@ import org.junit.jupiter.api.TestFactory
 
 class Tests {
 
-    val day = day14
+    val day = Day14()
 
     @Test
     fun todayPart1Example() {
+
+        doPart1(day)
         dayPartTest(day, { part1Example }, "Part1Example")
     }
 
@@ -28,7 +30,20 @@ class Tests {
     }
 
 
-    private fun <E> dayPartTest(d: Day<E>, part: Day<E>.() -> Part<E>, label: String) {
+
+    fun <R> doPart1(day: IDay<R>, fileName: String = "input.txt"): R {
+        val input = readInput(day.day(), fileName)
+        println("input: $input")
+        val start = System.currentTimeMillis()
+        val output = day(input)
+        val elapsed = System.currentTimeMillis() - start
+        println("output: $output")
+        println("time: ${elapsed}ms")
+        return output
+    }
+
+
+    private fun <E> dayPartTest(d: IDay<E>, part: Day<E>.() -> Part<E>, label: String) {
         val p = "Day ${d.dayNumber} - $label"
 
         println(p)

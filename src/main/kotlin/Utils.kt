@@ -66,6 +66,6 @@ class Part<E>(private val dayNumber: Int, example: Boolean, val expected: E?, pr
 
 }
 
-val days = listOf(day01, day02, day03, day04, day05, day06, day07, day08, day09, day10, day11, day12, day13, day14)
+val days = listOf(day01, day02, day03, day04, day05, day06, day07, day08, day09, day10, day11, day12, day13)
 
 data class Point(val x: Int, val y: Int, val value: Int = 0)
