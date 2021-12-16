@@ -45,12 +45,7 @@ private fun doPart(
 ): Int {
     val path = mutableSetOf<MPoint>()
     val queue = PriorityQueue<MPoint>()
-    queue.addAll(points.flatten())
-    queue.first().dist = 0
-
-    println("computing neighbors...")
-    val neighbors = points.map { lines -> lines.map { it.neighborsIn(points) } }
-    println("neighbors computed")
+    queue.add(points.flatten().first().apply { dist = 0 })
 
     // Iterations
     var cur: MPoint? = null
@@ -59,17 +54,15 @@ private fun doPart(
         if (cur == MPoint(width - 1, height - 1)) break
         if (cur !in path) {
             path.add(cur)
-            val list = neighbors[cur.y][cur.x]
+            val list = cur.neighborsIn(points)
             list
                 .forEach { n ->
                     if (cur.dist < Int.MAX_VALUE && n.dist > cur.dist + n.risk) {
                         n.dist = cur.dist + n.risk
-                        queue.remove(n)
                         queue.add(n)
                     }
                 }
         }
-        println("Q:" + queue.size)
     }
 
     return cur!!.dist
