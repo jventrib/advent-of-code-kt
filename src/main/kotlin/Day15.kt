@@ -1,7 +1,12 @@
 val day15 = day<Int>(15) {
     part1(expectedExampleOutput = 40, expectedOutput = 621) {
         val points = mapIndexed { y, line ->
-            line.toCharArray().mapIndexed { x, c -> MPoint(x, y).apply { dist = c.digitToInt() } }
+            line.toCharArray().mapIndexed { x, c ->
+                MPoint(x, y).apply {
+                    risk = c.digitToInt()
+                    dist = Int.MAX_VALUE
+                }
+            }
         }
         val height = points.size
         val width = points.maxOf { it.size }
@@ -9,13 +14,16 @@ val day15 = day<Int>(15) {
         doPart(points.flatten(), width, height)
     }
 
-    part2(expectedExampleOutput = 315, expectedOutput = 0) {
+    part2(expectedExampleOutput = 315, expectedOutput = 2904) {
+        val tileWidth = this.first().length
+        val tileHeight = this.size
         val points = (0 until 5).flatMap { yTime ->
             mapIndexed { y, line ->
                 (0 until 5).flatMap { xTime ->
                     line.toCharArray().mapIndexed { x, c ->
-                        MPoint(x + 100 * xTime, y + 100 * yTime).apply {
-                            dist = (c.digitToInt() + yTime + xTime).run { if (this > 9) this - 9 else this }
+                        MPoint(x + tileWidth * xTime, y + tileHeight * yTime).apply {
+                            risk = (c.digitToInt() + yTime + xTime).run { if (this > 9) this - 9 else this }
+                            dist = Int.MAX_VALUE
                         }
                     }
                 }
@@ -33,33 +41,37 @@ private fun doPart(
     width: Int,
     height: Int
 ): Int {
-    val S = mutableSetOf<MPoint>()
-    var Q = mutableListOf(points[0].apply { dist = 0 })
+    val path = mutableSetOf<MPoint>()
+    val queue = points.apply { first().dist = 0 }.toMutableList()
+
+    println("computing neighbors...")
+    val neighbors = points.map { it to it.neighborsIn(points) }.toMap()
+    println("neighbors computed")
 
     // Iterations
-    var u: MPoint? = null
-    while (Q.isNotEmpty()) {
-        u = extractMin(Q)
-        if (u == MPoint(width - 1, height - 1)) break
-        if (u !in S) {
-            S.add(u)
-            val list = u.neighborsIn(points)
+    var cur: MPoint? = null
+    while (queue.isNotEmpty()) {
+        cur = extractMin(queue)
+        if (cur == MPoint(width - 1, height - 1)) break
+        if (cur !in path) {
+            path.add(cur)
+            val list = neighbors.getValue(cur)
             list
                 .forEach { n ->
-                    Q.add(n.copy().apply { dist = u.dist + n.dist })
-                    Q = Q.distinct().toMutableList()
+                    if (cur.dist < Int.MAX_VALUE && n.dist > cur.dist + n.risk)
+                        n.dist = cur.dist + n.risk
                 }
-//            println(S.size)
         }
+        println("Q:" + queue.size)
     }
 
-    return u!!.dist
+    return cur!!.dist
 }
 
 
-fun extractMin(Q: MutableList<MPoint>): MPoint {
-    val node = Q.minByOrNull { it.dist } ?: Q.first()
-    Q.remove(node)
+fun extractMin(queue: MutableList<MPoint>): MPoint {
+    val node = queue.minByOrNull { it.dist } ?: queue.first()
+    queue.remove(node)
     return node
 }
 
@@ -67,6 +79,7 @@ data class Edge(val start: MPoint, val end: MPoint, val weight: Int)
 
 data class MPoint(val x: Int, val y: Int) {
 
+    var risk: Int = 0
     var dist: Int = 0
     fun neighborsIn(points: List<MPoint>): List<MPoint> {
         return listOfNotNull(
@@ -78,7 +91,7 @@ data class MPoint(val x: Int, val y: Int) {
     }
 
     override fun toString(): String {
-        return "MPoint(x=$x, y=$y, dist=$dist)"
+        return "MPoint(x=$x, y=$y, risk=$risk, dist=$dist)"
     }
 
 
