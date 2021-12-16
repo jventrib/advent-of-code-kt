@@ -1,3 +1,5 @@
+import java.util.*
+
 val day15 = day<Int>(15) {
     part1(expectedExampleOutput = 40, expectedOutput = 621) {
         val points = mapIndexed { y, line ->
@@ -11,7 +13,7 @@ val day15 = day<Int>(15) {
         val height = points.size
         val width = points.maxOf { it.size }
 
-        doPart(points.flatten(), width, height)
+        doPart(points, width, height)
     }
 
     part2(expectedExampleOutput = 315, expectedOutput = 2904) {
@@ -32,34 +34,39 @@ val day15 = day<Int>(15) {
         val height = points.size
         val width = points.maxOf { it.size }
 
-        doPart(points.flatten(), width, height)
+        doPart(points, width, height)
     }
 }
 
 private fun doPart(
-    points: List<MPoint>,
+    points: List<List<MPoint>>,
     width: Int,
     height: Int
 ): Int {
     val path = mutableSetOf<MPoint>()
-    val queue = points.apply { first().dist = 0 }.toMutableList()
+    val queue = PriorityQueue<MPoint>()
+    queue.addAll(points.flatten())
+    queue.first().dist = 0
 
     println("computing neighbors...")
-    val neighbors = points.map { it to it.neighborsIn(points) }.toMap()
+    val neighbors = points.map { lines -> lines.map { it.neighborsIn(points) } }
     println("neighbors computed")
 
     // Iterations
     var cur: MPoint? = null
     while (queue.isNotEmpty()) {
-        cur = extractMin(queue)
+        cur = queue.poll()
         if (cur == MPoint(width - 1, height - 1)) break
         if (cur !in path) {
             path.add(cur)
-            val list = neighbors.getValue(cur)
+            val list = neighbors[cur.y][cur.x]
             list
                 .forEach { n ->
-                    if (cur.dist < Int.MAX_VALUE && n.dist > cur.dist + n.risk)
+                    if (cur.dist < Int.MAX_VALUE && n.dist > cur.dist + n.risk) {
                         n.dist = cur.dist + n.risk
+                        queue.remove(n)
+                        queue.add(n)
+                    }
                 }
         }
         println("Q:" + queue.size)
@@ -69,24 +76,18 @@ private fun doPart(
 }
 
 
-fun extractMin(queue: MutableList<MPoint>): MPoint {
-    val node = queue.minByOrNull { it.dist } ?: queue.first()
-    queue.remove(node)
-    return node
-}
-
-data class Edge(val start: MPoint, val end: MPoint, val weight: Int)
-
-data class MPoint(val x: Int, val y: Int) {
-
+data class MPoint(val x: Int, val y: Int) : Comparable<MPoint> {
     var risk: Int = 0
     var dist: Int = 0
-    fun neighborsIn(points: List<MPoint>): List<MPoint> {
+    fun neighborsIn(points: List<List<MPoint>>): List<MPoint> {
+
+        val lines = points.filter { this.y == it.first().y - 1 || this.y == it.first().y || this.y == it.first().y + 1 }
+            .flatten()
         return listOfNotNull(
-            points.firstOrNull { this.x == it.x + 1 && this.y == it.y },
-            points.firstOrNull { this.x == it.x - 1 && this.y == it.y },
-            points.firstOrNull { this.x == it.x && this.y == it.y - 1 },
-            points.firstOrNull { this.x == it.x && this.y == it.y + 1 },
+            lines.firstOrNull { this.x == it.x + 1 && this.y == it.y },
+            lines.firstOrNull { this.x == it.x - 1 && this.y == it.y },
+            lines.firstOrNull { this.x == it.x && this.y == it.y - 1 },
+            lines.firstOrNull { this.x == it.x && this.y == it.y + 1 },
         )
     }
 
@@ -94,5 +95,8 @@ data class MPoint(val x: Int, val y: Int) {
         return "MPoint(x=$x, y=$y, risk=$risk, dist=$dist)"
     }
 
+    override fun compareTo(other: MPoint) = compareBy<MPoint> { it.dist }.compare(this, other)
+
 
 }
+
