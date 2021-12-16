@@ -49,11 +49,14 @@ private fun doPart(
 
     // Iterations
     var cur: MPoint? = null
+    val start = System.currentTimeMillis()
+
     while (queue.isNotEmpty()) {
         cur = queue.poll()
         if (cur == MPoint(width - 1, height - 1)) break
         if (cur !in path) {
             path.add(cur)
+//            val list = neighbors[cur.y][cur.x]
             val list = cur.neighborsIn(points)
             list
                 .forEach { n ->
@@ -65,6 +68,8 @@ private fun doPart(
         }
     }
 
+    val chrono = System.currentTimeMillis() - start
+    println("Dijkstra time: $chrono ms")
     return cur!!.dist
 }
 
@@ -72,17 +77,12 @@ private fun doPart(
 data class MPoint(val x: Int, val y: Int) : Comparable<MPoint> {
     var risk: Int = 0
     var dist: Int = 0
-    fun neighborsIn(points: List<List<MPoint>>): List<MPoint> {
-
-        val lines = points.filter { this.y == it.first().y - 1 || this.y == it.first().y || this.y == it.first().y + 1 }
-            .flatten()
-        return listOfNotNull(
-            lines.firstOrNull { this.x == it.x + 1 && this.y == it.y },
-            lines.firstOrNull { this.x == it.x - 1 && this.y == it.y },
-            lines.firstOrNull { this.x == it.x && this.y == it.y - 1 },
-            lines.firstOrNull { this.x == it.x && this.y == it.y + 1 },
-        )
-    }
+    fun neighborsIn(points: List<List<MPoint>>) = listOfNotNull(
+        points[y].getOrNull(x - 1),
+        points[y].getOrNull(x + 1),
+        points.getOrNull(y - 1)?.get(x),
+        points.getOrNull(y + 1)?.get(x),
+    )
 
     override fun toString(): String {
         return "MPoint(x=$x, y=$y, risk=$risk, dist=$dist)"
