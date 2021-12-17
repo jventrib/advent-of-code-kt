@@ -5,7 +5,9 @@ import org.junit.jupiter.api.TestFactory
 
 class Tests {
 
-    val day = day15
+    val day = day16
+    val days = listOf(day01, day02, day03, day04, day05, day06, day07, day08, day09, day10, day11,
+        day12, day13, day14, day15, day16)
 
     @Test
     fun todayPart1Example() {
