@@ -1,6 +1,6 @@
 val day17 = day<Int>(17) {
     part1(expectedExampleOutput = 45, expectedOutput = 25200) {
-        val hits = fireProbes(0..30, 0..300)
+        val hits = fireProbes()
         val winner = hits.maxByOrNull { it.trajectory.maxOf { it.pos.y } }
 //        draw(winner!!, target)
         val maxY = winner!!.trajectory.maxOf { it.pos.y }
@@ -9,22 +9,19 @@ val day17 = day<Int>(17) {
     }
 
     part2(expectedExampleOutput = 112, expectedOutput = 3012) {
-        val hits = fireProbes(0..70, -300..300)
+        val hits = fireProbes()
         hits.count()
     }
 }
 
-private fun List<String>.fireProbes(
-    tryRangeX: IntRange,
-    tryRangeY: IntRange,
-): List<Shot> {
+private fun List<String>.fireProbes(): List<Shot> {
     val xRange = first().substringAfter("x=").substringBefore(",").split("..")
-        .run { IntRange(first().toInt(), last().toInt()) }
+        .run { first().toInt()..last().toInt() }
     val yRange = first().substringAfter("y=").split("..")
-        .run { IntRange(first().toInt(), last().toInt()) }
+        .run { first().toInt()..last().toInt() }
     val target = Rect(xRange, yRange)
-    val hits = tryRangeX.flatMap { x ->
-        tryRangeY.map { y ->
+    val hits = (0..target.x.last).flatMap { x ->
+        (target.y.first..-target.y.first).map { y ->
             tryVelocity(Coord(x, y), target)
         }
     }.filter { it.hit }
