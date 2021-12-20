@@ -32,7 +32,7 @@ class Image(val pixels: List<List<Char>>, private val infinitePixel: Char = '.')
     fun processImage(enhancement: String): Image {
         val infiniteIndex = List(9) { infinitePixel }.getIndex()
         val newInfinitePixel = enhancement[infiniteIndex]
-        val margin = 10
+        val margin = 1
         val height = -(1 + margin)..pixels.size + margin
         val width = -(1 + margin)..pixels.maxOf { it.size } + margin
         return Image(height.map { y ->
