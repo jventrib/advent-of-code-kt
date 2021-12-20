@@ -3,11 +3,29 @@ import org.junit.jupiter.api.Test
 
 class Test18 {
 
-//    @Test
-//    fun testAdd() {
-//        val result = n(1, 2) + n(n(3, 4), n(5))
-//        assertEquals(n(n(1, 2), n(n(3, 4), n(5))), result)
-//    }
+    @Test
+    fun testAdd() {
+        val op1 = SFNumber.parse("[[[[4,3],4],4],[7,[[8,4],9]]]")
+        val op2 = SFNumber.parse("[1,1]")
+
+        val result = op1 + op2
+
+        val expected = SFNumber.parse("[[[[0,7],4],[[7,8],[6,0]]],[8,1]]")
+        assertEquals(expected.toString(), result.toString())
+
+    }
+
+    @Test
+    fun testAdd2() {
+        val op1 = SFNumber.parse("[[[0,[4,5]],[0,0]],[[[4,5],[2,6]],[9,5]]]")
+        val op2 = SFNumber.parse("[7,[[[3,7],[4,3]],[[6,3],[8,8]]]]")
+
+        val result = op1 + op2
+
+        val expected = SFNumber.parse("[[[[4,0],[5,4]],[[7,7],[6,0]]],[[8,[7,7]],[[7,9],[5,0]]]]")
+        assertEquals(expected.toString(), result.toString())
+
+    }
 
 
     @Test
@@ -22,9 +40,15 @@ class Test18 {
     private fun testExplode(inputS: String, expectedS: String) {
         val input = SFNumber.parse(inputS)
         val expected = SFNumber.parse(expectedS)
-        val sfPair = input as SFNumber.SFPair
-        sfPair.explode()
+        val sfPair = input
+        sfPair.explode(sfPair.findToExplode()!!)
         assertEquals(expected.toString(), sfPair.toString())
+    }
+
+    @Test
+    fun testSplit() {
+        assertEquals(SFNumber.parse("[5,6]").toString(), SFNumber.SFRegular(11).split().toString())
+        assertEquals(SFNumber.parse("[6,6]").toString(), SFNumber.SFRegular(12).split().toString())
     }
 
     @Test
