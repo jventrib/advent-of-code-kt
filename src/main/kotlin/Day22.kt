@@ -1,76 +1,82 @@
-val day22 = day<Int>(22) {
-    part1(expectedExampleOutput = 590784, expectedOutput = 0) {
+import java.lang.Long.max
+import kotlin.math.min
+
+val day22 = day<Long>(22) {
+    part1(expectedExampleOutput = 590784, expectedOutput = 503864) {
         val steps = this.map { line ->
             val status = line.substringBefore(" ").let { it == "on" }
             val xRange = line.substringAfter("x=").substringBefore(",").parseRange()
             val yRange = line.substringAfter("y=").substringBefore(",").parseRange()
             val zRange = line.substringAfter("z=").parseRange()
-            Step(status, xRange, yRange, zRange)
+            Cuboid(xRange, yRange, zRange, status, 0L)
         }
-
 
         val r = steps
             .filter {
-                it.xRange.first in -50..50
-                it.xRange.last in -50..50
-                it.yRange.first in -50..50
-                it.yRange.last in -50..50
-                it.zRange.first in -50..50
-                it.zRange.last in -50..50
+                it.x.first in -50..50
+                it.x.last in -50..50
+                it.y.first in -50..50
+                it.y.last in -50..50
+                it.z.first in -50..50
+                it.z.last in -50..50
             }
-            .asSequence().map { Cuboid.from(it) }.reduce { acc, cur -> acc + cur }
 
-        r.cubes.size
+        val reactor = Reactor(r)
+        reactor.reboot()
     }
 
     part2(expectedExampleOutput = 0, expectedOutput = 0) {
-        0
-    }
-}
-
-private fun String.parseRange() = split("..").let { it.first().toInt()..it.last().toInt() }
-
-
-data class Cube(val x: Int, val y: Int, val z: Int, val status: Boolean) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as Cube
-
-        if (x != other.x) return false
-        if (y != other.y) return false
-        if (z != other.z) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = x
-        result = 31 * result + y
-        result = 31 * result + z
-        return result
-    }
-}
-
-
-data class Cuboid(val cubes: Set<Cube>) {
-    operator fun plus(other: Cuboid): Cuboid {
-        return Cuboid((cubes - other.cubes + other.cubes).filter { it.status }.toSet())
-    }
-
-    companion object {
-        fun from(step: Step): Cuboid {
-            val cubes = step.xRange.flatMap { x ->
-                step.yRange.flatMap { y ->
-                    step.zRange.map { z ->
-                        Cube(x, y, z, step.status)
-                    }
-                }
-            }.toSet()
-            return Cuboid(cubes)
+        val steps = this.map { line ->
+            val status = line.substringBefore(" ").let { it == "on" }
+            val xRange = line.substringAfter("x=").substringBefore(",").parseRange()
+            val yRange = line.substringAfter("y=").substringBefore(",").parseRange()
+            val zRange = line.substringAfter("z=").parseRange()
+            Cuboid(xRange, yRange, zRange, status, 0L)
         }
+
+        val reactor = Reactor(steps)
+        reactor.reboot()
     }
 }
 
-data class Step(val status: Boolean, val xRange: IntRange, val yRange: IntRange, val zRange: IntRange)
+
+private fun String.parseRange() = split("..").let { it.first().toLong()..it.last().toLong() }
+
+
+data class Cuboid(val x: LongRange, val y: LongRange, val z: LongRange, val on: Boolean, val realCount: Long) {
+    fun onCubes() = x * y * z * if (on) 1 else -1
+
+    infix fun int(other: Cuboid) =
+        Cuboid(this.x int other.x, this.y int other.y, this.z int other.z, !this.on, 0L)
+
+    override fun toString(): String {
+        return "Cuboid(x=$x, y=$y, z=$z, on=$on, onCubes=${onCubes()}, realOnCubes=$realCount)"
+    }
+}
+
+infix fun LongRange.int(other: LongRange): LongRange {
+    if (this.first > other.last || this.last < other.first) return LongRange.EMPTY // No overlap
+    val starts = max(this.first, other.first)
+    val ends = min(this.last, other.last)
+    return starts..ends
+}
+
+private operator fun LongRange.times(other: LongRange): Long {
+    return (this.last - this.first + 1L) * other
+}
+
+private operator fun Long.times(other: LongRange): Long = this * (other.last - other.first + 1)
+
+data class Reactor(val cuboids: List<Cuboid>) {
+    fun reboot() = cuboids.fold<Cuboid, List<Cuboid>>(listOf()) { volumes, cuboid ->
+        val intersections = getIntersections(volumes, cuboid)
+        if (cuboid.on) volumes + intersections + cuboid else volumes + intersections
+    }.sumOf { it.onCubes() }
+
+    private fun getIntersections(cuboids: List<Cuboid>, cuboid: Cuboid): List<Cuboid> {
+        val intersections = cuboids
+            .filter { (cuboid int it).onCubes() != 0L }
+            .map { it int cuboid }
+        return intersections
+    }
+}
