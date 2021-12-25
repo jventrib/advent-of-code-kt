@@ -25,7 +25,7 @@ val day22 = day<Long>(22) {
         reactor.reboot()
     }
 
-    part2(expectedExampleOutput = 0, expectedOutput = 0) {
+    part2(expectedExampleOutput = 39769202357779L, expectedOutput = 1255547543528356L) {
         val steps = this.map { line ->
             val status = line.substringBefore(" ").let { it == "on" }
             val xRange = line.substringAfter("x=").substringBefore(",").parseRange()
