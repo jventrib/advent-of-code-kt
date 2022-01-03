@@ -1,116 +1,87 @@
-val day21 = day<Int>(21) {
-    part1(expectedExampleOutput = 739785, expectedOutput = 0) {
+val day21 = day<Long>(21) {
+    part1(expectedExampleOutput = 739785, expectedOutput = 720750) {
+        val player1 = first().substringAfter("Player 1 starting position: ").toInt()
+        val player2 = last().substringAfter("Player 2 starting position: ").toInt()
 
-        val players = getPlayers()
+        val result = playGame(player1, player2)
+        result
+    }
 
-        var i = 0
-        var rolls = 0
-        while (true) {
-            for (it in players) {
-                val num = i * 6 + it.offset
-                val space = wrap(it.place, num)
-                rolls += 3
-                it.place = space
-                it.score += space
-                if (players.maxOf { it.score >= 1000 }) {
-                    println("stop")
-                    break
-                }
-            }
-            if (players.maxOf { it.score >= 1000 }) {
-                println("stop")
-                break
-            }
-            i++
+    part2(expectedExampleOutput = 444356092776315, expectedOutput = 275067741811212) {
+        val player1 = first().substringAfter("Player 1 starting position: ").toInt()
+        val player2 = last().substringAfter("Player 2 starting position: ").toInt()
+        val wins = playGame2(Round(player1, 0, player2, 0))
+
+        maxOf(wins.p1, wins.p2)
+    }
+}
+
+private fun Int.wrap100() = (this - 1) % 100 + 1
+
+private fun Int.wrap() = (this - 1) % 10 + 1
+
+
+private val eachCount =
+    (1..3).flatMap { a -> (1..3).flatMap { b -> (1..3).map { c -> a + b + c } } }.groupingBy { it }.eachCount()
+
+private fun playGame(p1: Int, p2: Int): Long {
+    var side = 1
+    var rolls = 0
+
+    fun rollDice(): Int {
+        return side.also {
+            side = (it + 1).wrap100()
+            rolls++
         }
-
-
-        players.minOf { it.score } * rolls
     }
 
-    part2(expectedExampleOutput = 0, expectedOutput = 0) {
-        val p1 = playGame(Round(1, 4, 0, 8, 0))
+    var score1 = 0
+    var place1: Int = p1
+    var score2 = 0
+    var place2: Int = p2
+    while (true) {
+        place1 = (place1 + rollDice()).wrap()
+        place1 = (place1 + rollDice()).wrap()
+        place1 = (place1 + rollDice()).wrap()
+        score1 += place1
+        if (score1 >= 1000)
+            return (score2 * rolls).toLong()
 
-        0
-
+        place2 = (place2 + rollDice()).wrap()
+        place2 = (place2 + rollDice()).wrap()
+        place2 = (place2 + rollDice()).wrap()
+        score2 += place2
+        if (score2 >= 1000)
+            return (score1 * rolls).toLong()
     }
 }
 
-private fun List<String>.getPlayers(): List<Player> {
-    val player1 = first().substringAfter("Player 1 starting position: ").toInt()
-    val player2 = last().substringAfter("Player 2 starting position: ").toInt()
-
-    val players = listOf(
-        Player(1, player1),
-        Player(2, player2)
-    )
-    return players
-}
-
-data class Player(val player: Int, var place: Int, var score: Int = 0) {
-    val offset get() = (player - 1) * 3 + 1
-
-}
-
-fun getDiceResult(firstNumber: Int): Int {
-    return (firstNumber..firstNumber + 2).sumOf { (it - 1) % 100 + 1 }
-}
-
-fun wrap(currentSpace: Int, firstNumber: Int): Int {
-    val diceResult = getDiceResult(firstNumber)
-    return (currentSpace + diceResult).wrap()
+private fun playGame2(round: Round): Wins = when {
+    round.score1 >= 21 -> Wins(1, 0)
+    round.score2 >= 21 -> Wins(0, 1)
+    else -> eachCount
+        .map { playGame2(round.play(it.key)) * it.value }
+        .reduce { acc, wins -> acc + wins }
 }
 
 
-fun Int.wrap() = (this - 1) % 10 + 1
-
-data class Round(val player: Int, var place: Int, var score: Int = 0, var place2: Int, var score2: Int = 0) {
-    operator fun times(count: Int): Round {
-        return this.copy(place = this.place * count, score = this.score * count)
+private data class Round(
+    val place1: Int,
+    val score1: Int,
+    val place2: Int,
+    val score2: Int,
+    val player1ToPlay: Boolean = true
+) {
+    fun play(threeRollsResult: Int) = if (player1ToPlay) {
+        val newPlace1 = (place1 + threeRollsResult).wrap()
+        copy(place1 = newPlace1, score1 = score1 + newPlace1, player1ToPlay = false)
+    } else {
+        val newPlace2 = (place2 + threeRollsResult).wrap()
+        copy(place2 = newPlace2, score2 = score2 + newPlace2, player1ToPlay = true)
     }
-
-    operator fun plus(other: Round): Round {
-        return this.copy(place = this.place + other.place, score = this.score + other.score)
-    }
-
 }
 
-
-val diracDiceSums = (1..3).flatMap { a -> (1..3).flatMap { b -> (1..3).map { c -> a + b + c } } }
-
-data class Acc(val numbers: Map<Int, Long>, val scores: Map<Int, Long>)
-
-val cache = mutableMapOf<Round, Wins>()
-
-fun playGame(round: Round): Wins {
-    if (round.score >= 21) return Wins(1, 0)
-    if (round.score2 >= 21) return Wins(0, 1)
-
-    val cached = cache[round]
-    if (cached != null) return cached
-    val r1 = diracDiceSums
-        .map { (it + round.place).wrap() }
-        .groupingBy { it }.eachCount()
-        .map { (place, count) ->
-            playGame(round.copy(place = place, score = round.score + place)) * count
-        }
-    val r2 = diracDiceSums
-        .map { (it + round.place2).wrap() }
-        .groupingBy { it }.eachCount()
-        .map { (place2, count) ->
-            playGame(round.copy(place2 = place2, score2 = round.score2 + place2)) * count
-        }
-    val res = r1.zip(r2) { t1, t2 ->
-        t1 + t2
-    }.reduce { total: Wins, round: Wins ->
-        total + round
-    }
-    cache[round] = res
-    return res
-}
-
-
-data class Wins(val p1: Long, val p2: Long) {
+private data class Wins(val p1: Long, val p2: Long) {
     operator fun plus(other: Wins): Wins {
         return Wins(this.p1 + other.p1, this.p2 + other.p2)
     }
