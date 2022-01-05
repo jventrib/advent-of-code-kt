@@ -1,3 +1,8 @@
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
@@ -44,4 +49,25 @@ class Test19 {
     private fun assertRotated(expected: Point3d, point: Point3d) {
         assertTrue(orientations.map { it * point }.any { expected == it })
     }
+
+
+    @Test
+    fun testParallelFlow() {
+        val f: Flow<String> = (0 until 100).asFlow().concurrentMap(Dispatchers.Default, 1) { i ->
+            bigTask(i)
+        }
+
+
+        runBlocking {
+            f.collect {
+                println(it)
+            }
+        }
+    }
+
+    private fun bigTask(i: Int): String {
+        Thread.sleep(1000)
+        return "${Thread.currentThread().name}: ${i * i}"
+    }
 }
+

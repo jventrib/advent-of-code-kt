@@ -1,3 +1,6 @@
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.runBlocking
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
@@ -13,11 +16,14 @@ val day19 = day<Int>(19) {
         val allScanners = getScanners()
         val maxDist = allScanners
             .flatMap { sa ->
-                allScanners.filter { sb -> sa != sb }.map { sb -> sa.transformation!!.translation to sb.transformation!!.translation }
+                allScanners.filter { sb -> sa != sb }
+                    .map { sb -> sa.transformation!!.translation to sb.transformation!!.translation }
             }
             .map { abs(it.second.x - it.first.x) + abs(it.second.y - it.first.y) + abs(it.second.z - it.first.z) }
             .maxOf { it }
         maxDist
+
+
     }
 }
 
@@ -109,11 +115,17 @@ data class Scanner(
     }
 
     private fun checkWith(other: Scanner): Scanner? {
-        val scannerTransformation = orientations
-            .pmap { m -> m to getScannerPositionForOrientation(m, other) }
-            .firstOrNull { it.second != null }
-            ?.let { Transformation(it.first, it.second!!) } ?: return null
-
+        val scannerTransformation = runBlocking {
+            orientations.asFlow()
+                .concurrentMap(Dispatchers.Default, DEFAULT_CONCURRENCY) { m ->
+                    m to getScannerPositionForOrientation(
+                        m,
+                        other
+                    )
+                }
+                .firstOrNull { it.second != null }
+                ?.let { Transformation(it.first, it.second!!) }
+        } ?: return null
         val correctedTransformation = other.transformation?.let {
             Transformation(
                 it.matrix * scannerTransformation.matrix,

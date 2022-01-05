@@ -1,5 +1,10 @@
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapMerge
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import java.io.File
 import java.math.BigInteger
 import java.security.MessageDigest
@@ -69,32 +74,20 @@ class Part<E>(private val dayNumber: Int, example: Boolean, val expected: E?, pr
     override fun toString(): String {
         return "Part(output=$output)"
     }
-
-
 }
 
 data class Point(val x: Int, val y: Int, val value: Int = 0)
 
-
-fun <T, R> Iterable<T>.pmap(
-    numThreads: Int = Runtime.getRuntime().availableProcessors() - 2,
-    exec: ExecutorService = Executors.newFixedThreadPool(numThreads),
-    transform: (T) -> R): List<R> {
-
-    // default size is just an inlined version of kotlin.collections.collectionSizeOrDefault
-    val defaultSize = if (this is Collection<*>) this.size else 10
-    val destination = Collections.synchronizedList(ArrayList<R>(defaultSize))
-
-    for (item in this) {
-        exec.submit { destination.add(transform(item)) }
-    }
-
-    exec.shutdown()
-    exec.awaitTermination(1, TimeUnit.DAYS)
-
-    return ArrayList<R>(destination)
-}
-
 suspend fun <T, R> Iterable<T>.mapParallel(transform: (T) -> R): List<R> = coroutineScope {
     map { async { transform(it) } }.map { it.await() }
+}
+
+fun <T, R> Flow<T>.concurrentMap(
+    dispatcher: CoroutineDispatcher,
+    concurrencyLevel: Int,
+    transform: suspend (T) -> R
+): Flow<R> {
+    return flatMapMerge(concurrencyLevel) { value ->
+        flow { emit(transform(value)) }
+    }.flowOn(dispatcher)
 }
