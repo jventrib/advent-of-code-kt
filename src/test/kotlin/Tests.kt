@@ -42,9 +42,6 @@ class Tests {
             d.part().output
     }
 
-
-}
-/*
     @TestFactory
     fun oneDayTest() = dayTest(day)
 
@@ -125,4 +122,4 @@ class Tests {
 }
 
 private fun Int.pad() = this.toString().padStart(2, '0')
-*/
+

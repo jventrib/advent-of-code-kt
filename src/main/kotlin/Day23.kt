@@ -153,9 +153,6 @@ data class Amphipod(val type: AmphipodType, val pos: Pos, val energy: Int = 0, v
                 getFreeRooms(-1 downTo -11).forEach { addStepWithNewPos(pos.x + it, getDepth(pos.x + it), true) }
             }
         }
-        set.filter { it.amphipods.size < 16 }.map {
-            println("Missing: $it")
-        }
         return set
     }
 
@@ -184,29 +181,17 @@ data class Amphipod(val type: AmphipodType, val pos: Pos, val energy: Int = 0, v
 
     private fun MutableSet<Step>.addStepWithNewPos(x: Int, y: Int, done: Boolean = false) {
         val amphipods = newPos(this@Amphipod, x, y, if (done) true else this@Amphipod.done)
-        if (amphipods.size < 16) {
-            println("Missing: $amphipods")
-        }
         add(step.copy(amphipods = amphipods, prev = step, energy = amphipods.sumOf { it.energy }))
     }
 
     private fun newPos(amphipod: Amphipod, x: Int, y: Int, done: Boolean): Set<Amphipod> {
         val deltaX = x - pos.x
         val deltaY = y - pos.y
-        val list = (step.amphipods - amphipod).map { it.copy(energy = 0) } + amphipod.copy(
+        return ((step.amphipods - amphipod).map { it.copy(energy = 0) } + amphipod.copy(
             pos = pos.copy(x = x, y = y),
             energy = (abs(deltaX) + abs(deltaY)) * type.energyPerStep,
             done = done
-        )
-        if (list.groupingBy { it.pos }.eachCount().any { it.value > 1 }) {
-            println("Missing:")
-        }
-        val set = list.toSet()
-
-        if (set.size < 16) {
-            println("Missing: $set")
-        }
-        return set
+        )).toSet()
     }
 
     private fun getChar(x: Int, y: Int) = step.getCharAt(x, y)
