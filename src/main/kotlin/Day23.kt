@@ -10,48 +10,41 @@ val day23 = day<Int>(23) {
         solve(this)
     }
 
-
     part2(expectedExampleOutput = 44169, expectedOutput = 56982) {
         val part2Lines = listOf(
             "  #D#C#B#A#",
             "  #D#B#A#C#"
         )
         val list = this.take(3) + part2Lines + this.drop(3)
-
         solve(list)
     }
 }
 
 private fun solve(list: List<String>): Int {
-    val initial = Step.fromInput(list)
-    initial.total = 0
     val queue = PriorityQueue<Step>()
-    val solutions = mutableListOf<Step>()
+    val initial = Step.fromInput(list).apply { total = 0 }
     queue.add(initial)
+    val solutions = mutableListOf<Step>()
+    val totals = mutableMapOf<String, Int>().withDefault { Int.MAX_VALUE }
     var i = 0
-    val totals = mutableMapOf<Set<Amphipod>, Int>().withDefault { Int.MAX_VALUE }
     while (queue.isNotEmpty()) {
+        val nextStates = mutableListOf<Step>()
         val current = queue.poll()
-
         val nextSteps = current.amphipods
             .filterNot { it.done }
             .flatMap { it.getNextSteps(current) }
-//            .sortedBy { it.energy }
-//                .filter { w.total < Int.MAX_VALUE && it.total > w.total + it.energy }
-//                .onEach { it.total = w.total + it.energy }
-//                .filter { it.total in listOf(0, 40, 240) }
-
 
         nextSteps.forEach { next ->
-            val costForStep = totals.getValue(next.amphipods)
+            val costForStep = totals.getValue(next.layout)
             val newCost = current.total + next.energy
             if (newCost < costForStep) {
                 next.total = newCost
-                totals[next.amphipods] = newCost
-                queue.add(next)
+                totals[next.layout] = newCost
+                nextStates.add(next)
             }
         }
 
+        queue.addAll(nextStates)
         if (nextSteps.isNotEmpty() && nextSteps.all { it.isDone() }) {
             solutions.addAll(nextSteps)
         }
@@ -69,21 +62,19 @@ private fun solve(list: List<String>): Int {
 
 data class Step(val amphipods: Set<Amphipod>, private var prev: Step?, var energy: Int) : Comparable<Step> {
 
-    val mask = listOf(
+    private val mask = listOf(
         "#############",
         "#...........#",
         "###.#.#.#.###",
         "#.#.#.#.#",
         "#########"
-    ).map {
-        val s = it.padEnd(11, ' ').padStart(13, ' ')
-        s
-    }
-
+    ).map { it.padEnd(11, ' ').padStart(13, ' ') }
 
     val amphisWithWorld: List<CharArray>
 
     var total = Int.MAX_VALUE
+
+    val layout: String
 
     init {
         val ca = mask
@@ -95,6 +86,8 @@ data class Step(val amphipods: Set<Amphipod>, private var prev: Step?, var energ
             .map { it.toCharArray() }
         amphipods.map { ca[it.pos.y][it.pos.x] = it.type.symbol }
         amphisWithWorld = ca
+
+        layout = amphisWithWorld.joinToString(System.lineSeparator(), transform = ::String)
     }
 
     fun getCharAt(x: Int, y: Int) = amphisWithWorld[y.coerceIn(0..7)][x.coerceIn(0..12)]
@@ -102,23 +95,15 @@ data class Step(val amphipods: Set<Amphipod>, private var prev: Step?, var energ
     fun isDone() = amphipods.all { it.done }
 
     override fun toString(): String {
-        return amphisWithWorld.joinToString(
-            separator = System.lineSeparator(),
-            postfix = System.lineSeparator(),
-            prefix = "Total: $total" + System.lineSeparator()
-                    + "Energy: $energy" + System.lineSeparator()
-                    + "Amphis Done: ${amphipods.count()}" + System.lineSeparator()
-        ) {
-            it.joinToString(
-                ""
-            )
-        }
+        return """Total: $total
+            |Energy: $energy
+            |Amphis Done: ${amphipods.count()}
+            |$layout""".trimMargin()
     }
 
     private fun getHistory(): List<Step> {
         return prev?.let { it.getHistory() + this } ?: listOf(this)
     }
-
 
     fun printHistory() {
         val history = getHistory()
@@ -128,27 +113,7 @@ data class Step(val amphipods: Set<Amphipod>, private var prev: Step?, var energ
         println()
     }
 
-
     override fun compareTo(other: Step) = compareBy<Step> { it.energy }.compare(this, other)
-//    override fun equals(other: Any?): Boolean {
-//        if (this === other) return true
-//        if (javaClass != other?.javaClass) return false
-//
-//        other as Step
-//
-//        if (amphipods != other.amphipods) return false
-//        if (energy != other.energy) return false
-//        if (total != other.total) return false
-//
-//        return true
-//    }
-//
-//    override fun hashCode(): Int {
-//        var result = amphipods.hashCode()
-//        result = 31 * result + energy
-//        result = 31 * result + total
-//        return result
-//    }
 
     companion object {
         fun fromInput(input: List<String>): Step {
@@ -179,8 +144,8 @@ data class Amphipod(val type: AmphipodType, val pos: Pos, val energy: Int = 0, v
         val set = buildSet {
 
             if (canLeaveRoom()) {
-                getFreeHallwaySlots(-1 downTo -11).forEach { addStepWithNewPos(pos.x + it, 1) }
                 getFreeHallwaySlots(1..11).forEach { addStepWithNewPos(pos.x + it, 1) }
+                getFreeHallwaySlots(-1 downTo -11).forEach { addStepWithNewPos(pos.x + it, 1) }
             }
 
             if (inHallway()) {
@@ -222,7 +187,6 @@ data class Amphipod(val type: AmphipodType, val pos: Pos, val energy: Int = 0, v
         if (amphipods.size < 16) {
             println("Missing: $amphipods")
         }
-
         add(step.copy(amphipods = amphipods, prev = step, energy = amphipods.sumOf { it.energy }))
     }
 
@@ -246,28 +210,6 @@ data class Amphipod(val type: AmphipodType, val pos: Pos, val energy: Int = 0, v
     }
 
     private fun getChar(x: Int, y: Int) = step.getCharAt(x, y)
-
-//    override fun equals(other: Any?): Boolean {
-//        if (this === other) return true
-//        if (javaClass != other?.javaClass) return false
-//
-//        other as Amphipod
-//
-//        if (type != other.type) return false
-//        if (pos != other.pos) return false
-//        if (energy != other.energy) return false
-//        if (done != other.done) return false
-//
-//        return true
-//    }
-//
-//    override fun hashCode(): Int {
-//        var result = type.hashCode()
-//        result = 31 * result + pos.hashCode()
-//        result = 31 * result + energy
-//        result = 31 * result + done.hashCode()
-//        return result
-//    }
 }
 
 data class Pos(val x: Int, val y: Int)
