@@ -3,7 +3,7 @@ import kotlin.math.min
 
 val day16 = day<List<Long>>(16) {
     part1(expectedExampleOutput = listOf(14, 8, 15, 11, 13, 19, 16, 20), expectedOutput = listOf(821)) {
-        map {
+        input.map {
             val packet = getPacket(it.bin())
             println(packet.versionSum)
             packet.versionSum.toLong()
@@ -11,7 +11,7 @@ val day16 = day<List<Long>>(16) {
     }
 
     part2(expectedExampleOutput = listOf(3, 54, 7, 9, 1, 0, 0, 1), expectedOutput = listOf(2056021084691)) {
-        map {
+        input.map {
             val packet = getPacket(it.bin())
             val value = packet.value
             println(value)

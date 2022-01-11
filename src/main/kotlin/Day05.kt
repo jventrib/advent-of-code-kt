@@ -3,11 +3,11 @@ private typealias VPoint = Int
 const val WIDTH = 1000
 val day05 = day<Int>(5) {
     part1(expectedExampleOutput = 5, expectedOutput = 5084) {
-        doPart(withDiag = false)
+        input.doPart(withDiag = false)
     }
 
     part2(expectedExampleOutput = 12, expectedOutput = 17882) {
-        doPart(withDiag = true)
+        input.doPart(withDiag = true)
     }
 }
 

@@ -2,18 +2,18 @@ val day03 = day<Int>(3) {
     part1(198) {
         val range = 0 until 5
         val gamma = range.map { pos ->
-            getMostCommon(getCharsAtPos(pos))
+            getMostCommon(input.getCharsAtPos(pos))
         }.joinToString("").toInt(2)
 
         val epsilon = range.map { pos ->
-            getLeastCommon(getCharsAtPos(pos))
+            getLeastCommon(input.getCharsAtPos(pos))
         }.joinToString("").toInt(2)
         gamma * epsilon
     }
 
     part2(230) {
-        val oxygen = this.keepCommon(0) { getMostCommon(it) }.toInt(2)
-        val co2 = this.keepCommon(0) { getLeastCommon(it) }.toInt(2)
+        val oxygen = input.keepCommon(0) { getMostCommon(it) }.toInt(2)
+        val co2 = input.keepCommon(0) { getLeastCommon(it) }.toInt(2)
         oxygen * co2
     }
 }

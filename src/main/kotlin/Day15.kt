@@ -2,7 +2,7 @@ import java.util.*
 
 val day15 = day<Int>(15) {
     part1(expectedExampleOutput = 40, expectedOutput = 621) {
-        val points = mapIndexed { y, line ->
+        val points = input.mapIndexed { y, line ->
             line.toCharArray().mapIndexed { x, c ->
                 MPoint(x, y).apply {
                     risk = c.digitToInt()
@@ -17,10 +17,10 @@ val day15 = day<Int>(15) {
     }
 
     part2(expectedExampleOutput = 315, expectedOutput = 2904) {
-        val tileWidth = this.first().length
-        val tileHeight = this.size
+        val tileWidth = input.first().length
+        val tileHeight = input.size
         val points = (0 until 5).flatMap { yTime ->
-            mapIndexed { y, line ->
+            input.mapIndexed { y, line ->
                 (0 until 5).flatMap { xTime ->
                     line.toCharArray().mapIndexed { x, c ->
                         MPoint(x + tileWidth * xTime, y + tileHeight * yTime).apply {

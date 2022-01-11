@@ -3,7 +3,7 @@ import kotlin.math.min
 
 val day22 = day<Long>(22) {
     part1(expectedExampleOutput = 590784, expectedOutput = 503864) {
-        val steps = this.map { line ->
+        val steps = input.map { line ->
             val status = line.substringBefore(" ").let { it == "on" }
             val xRange = line.substringAfter("x=").substringBefore(",").parseRange()
             val yRange = line.substringAfter("y=").substringBefore(",").parseRange()
@@ -26,7 +26,7 @@ val day22 = day<Long>(22) {
     }
 
     part2(expectedExampleOutput = 39769202357779L, expectedOutput = 1255547543528356L) {
-        val steps = this.map { line ->
+        val steps = input.map { line ->
             val status = line.substringBefore(" ").let { it == "on" }
             val xRange = line.substringAfter("x=").substringBefore(",").parseRange()
             val yRange = line.substringAfter("y=").substringBefore(",").parseRange()

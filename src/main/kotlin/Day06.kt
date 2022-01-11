@@ -2,11 +2,11 @@ import java.util.*
 
 val day06 = day<Long>(6) {
     part1(expectedExampleOutput = 5934, expectedOutput = 374927) {
-        doPart(80)
+        input.doPart(80)
     }
 
     part2(expectedExampleOutput = 26984457539, expectedOutput = 1687617803407) {
-        doPart(256)
+        input.doPart(256)
     }
 }
 

@@ -1,6 +1,6 @@
 val day10 = day<Long>(10) {
     part1(expectedExampleOutput = 26397, expectedOutput = 265527) {
-        val corruptedLines = fold(listOf<Char>()) { acc, line ->
+        val corruptedLines = input.fold(listOf<Char>()) { acc, line ->
             val corrupted = getCorruptedChar(line)
             if (corrupted != null) acc + corrupted else acc
         }
@@ -8,7 +8,7 @@ val day10 = day<Long>(10) {
     }
 
     part2(expectedExampleOutput = 288957, expectedOutput = 3969823589) {
-        val notCorruptedLines = fold(listOf<String>()) { acc, line ->
+        val notCorruptedLines = input.fold(listOf<String>()) { acc, line ->
             val corrupted = getCorruptedChar(line)
             if (corrupted == null) acc + line else acc
         }

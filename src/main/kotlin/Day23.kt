@@ -7,7 +7,7 @@ fun main() {
 
 val day23 = day<Int>(23) {
     part1(expectedExampleOutput = 12521, expectedOutput = 13558) {
-        solve(this)
+        solve(input)
     }
 
     part2(expectedExampleOutput = 44169, expectedOutput = 56982) {
@@ -15,7 +15,7 @@ val day23 = day<Int>(23) {
             "  #D#C#B#A#",
             "  #D#B#A#C#"
         )
-        val list = this.take(3) + part2Lines + this.drop(3)
+        val list = input.take(3) + part2Lines + input.drop(3)
         solve(list)
     }
 }

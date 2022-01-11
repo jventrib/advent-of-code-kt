@@ -1,6 +1,6 @@
 val day17 = day<Int>(17) {
     part1(expectedExampleOutput = 45, expectedOutput = 25200) {
-        val hits = fireProbes()
+        val hits = input.fireProbes()
         val winner = hits.maxByOrNull { it.trajectory.maxOf { it.pos.y } }
 //        draw(winner!!, target)
         val maxY = winner!!.trajectory.maxOf { it.pos.y }
@@ -9,7 +9,7 @@ val day17 = day<Int>(17) {
     }
 
     part2(expectedExampleOutput = 112, expectedOutput = 3012) {
-        val hits = fireProbes()
+        val hits = input.fireProbes()
         hits.count()
     }
 }

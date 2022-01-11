@@ -1,6 +1,6 @@
 val day09 = day<Int>(9) {
     part1(expectedExampleOutput = 15, expectedOutput = 560) {
-        val matrix = this.map { it.toCharArray().toList().map(Char::digitToInt) }
+        val matrix = input.map { it.toCharArray().toList().map(Char::digitToInt) }
         val width = matrix.maxOf { it.size }
         val height = matrix.size
         val lowPoints = getLowPoints(matrix, width, height)
@@ -8,7 +8,7 @@ val day09 = day<Int>(9) {
     }
 
     part2(expectedExampleOutput = 1134, expectedOutput = 959136) {
-        val matrix = this.map { it.toCharArray().toList().map(Char::digitToInt) }
+        val matrix = input.map { it.toCharArray().toList().map(Char::digitToInt) }
         val width = matrix.maxOf { it.size }
         val height = matrix.size
         val basins = getLowPoints(matrix, width, height).map { lowPoint ->

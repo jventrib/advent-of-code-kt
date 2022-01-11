@@ -3,7 +3,7 @@ import ALU.VarName.*
 val day24 = day<Long>(24) {
     part1(expectedExampleOutput = 36969794979199, expectedOutput = 36969794979199) {
 
-        doPart(true)
+        input.doPart(true)
 
 
 //        val parameters = this.chunked(18).map {
@@ -51,8 +51,7 @@ val day24 = day<Long>(24) {
     }
 
     part2(expectedExampleOutput = 11419161313147, expectedOutput = 11419161313147) {
-        doPart(false)
-
+        input.doPart(false)
     }
 }
 
@@ -70,11 +69,8 @@ private fun List<String>.doPart(part1: Boolean): Long {
         } else {
             val (index, offset) = stack.removeLast()
             val newOffset = parameters.check + offset
-            val digit = if (part1) {
-                (9 downTo 1).first { it + newOffset in 1..9 }
-            } else {
-                (1..9).first { it + newOffset in 1..9 }
-            }
+            val digit = (if (part1) (9 downTo 1) else (1..9)).first { it + newOffset in 1..9 }
+
             digits[index] = digit
             digits[i] = digit + newOffset
         }

@@ -8,13 +8,6 @@ import kotlinx.coroutines.flow.flowOn
 import java.io.File
 import java.math.BigInteger
 import java.security.MessageDigest
-import java.util.*
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
-import kotlin.collections.ArrayList
-
-typealias IOFun<E> = List<String>.() -> E
 
 /**
  * Reads lines from the given input txt file.
@@ -43,34 +36,38 @@ fun <R> doPart(day: Int, fileName: String = "input.txt", part: List<String>.() -
 }
 
 fun <E> day(dayNumber: Int, block: Day<E>.() -> Unit): Day<E> {
-    val day = Day<E>(dayNumber)
-    day.block()
+    val day = Day<E>(dayNumber, block)
     return day
 }
 
 
-class Day<E>(val dayNumber: Int) {
+class Day<E>(val dayNumber: Int, val block: Day<E>.() -> Unit) {
+    lateinit var input: List<String>
     lateinit var part1: Part<E>
     lateinit var part1Example: Part<E>
     lateinit var part2: Part<E>
     lateinit var part2Example: Part<E>
 
-    fun part1(expectedExampleOutput: E, expectedOutput: E? = null, block: IOFun<E>): Part<E> {
+    fun part1(expectedExampleOutput: E, expectedOutput: E? = null, block: () -> E): Part<E> {
         part1 = Part(dayNumber, false, expectedOutput, block)
         part1Example = Part(dayNumber, true, expectedExampleOutput, block)
         return part1
     }
 
-    fun part2(expectedExampleOutput: E, expectedOutput: E? = null, block: IOFun<E>): Part<E> {
+    fun part2(expectedExampleOutput: E, expectedOutput: E? = null, block: () -> E): Part<E> {
         part2 = Part(dayNumber, false, expectedOutput, block)
         part2Example = Part(dayNumber, true, expectedExampleOutput, block)
         return part2
     }
 }
 
-class Part<E>(private val dayNumber: Int, example: Boolean, val expected: E?, private val block: IOFun<E>) {
-    private val fileName = if (example) "input_example.txt" else "input.txt"
-    val output get() = doPart(dayNumber, fileName, part = block)
+class Part<E>(
+    private val dayNumber: Int,
+    example: Boolean,
+    val expected: E?,
+    private val block: () -> E
+) {
+    val output get() = block()
     override fun toString(): String {
         return "Part(output=$output)"
     }

@@ -7,13 +7,13 @@ import kotlin.math.sin
 
 val day19 = day<Int>(19) {
     part1(expectedExampleOutput = 79, expectedOutput = 392) {
-        val allScanners = getScanners()
+        val allScanners = input.getScanners()
         val allBeacons = allScanners.flatMap { it.fromScanner0Beacons }.distinct().sorted()
         allBeacons.size
     }
 
     part2(expectedExampleOutput = 3621, expectedOutput = 13332) {
-        val allScanners = getScanners()
+        val allScanners = input.getScanners()
         val maxDist = allScanners
             .flatMap { sa ->
                 allScanners.filter { sb -> sa != sb }

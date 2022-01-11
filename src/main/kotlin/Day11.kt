@@ -1,7 +1,7 @@
 val day11 = day<Int>(11) {
     part1(expectedExampleOutput = 1656, expectedOutput = 1637) {
 
-        val matrix: MutableList<MutableList<Int>> = this.map {
+        val matrix: MutableList<MutableList<Int>> = input.map {
             it.toCharArray().toList().map(Char::digitToInt).toMutableList()
         }.toMutableList()
         val height = matrix.size
@@ -16,7 +16,7 @@ val day11 = day<Int>(11) {
     }
 
     part2(expectedExampleOutput = 195, expectedOutput = 242) {
-        val matrix: MutableList<MutableList<Int>> = this.map {
+        val matrix: MutableList<MutableList<Int>> = input.map {
             it.toCharArray().toList().map(Char::digitToInt).toMutableList()
         }.toMutableList()
 

@@ -2,11 +2,11 @@ import kotlin.math.ceil
 
 val day14 = day<Long>(14) {
     part1(expectedExampleOutput = 1588, expectedOutput = 3306) {
-        doPart(10)
+        input.doPart(10)
     }
 
     part2(expectedExampleOutput = 2188189693529, expectedOutput = 3760312702877) {
-        doPart(40)
+        input.doPart(40)
     }
 }
 

@@ -2,14 +2,13 @@ typealias Path = List<Cave>
 
 val day12 = day<Int>(12) {
     part1(expectedExampleOutput = 10, expectedOutput = 3463) {
-        val group: Map<Cave, List<Cave>> = getConnections()
-
+        val group: Map<Cave, List<Cave>> = input.getConnections()
         val paths = buildPath(group, listOf(Cave("start")), true).filter { it.contains(Cave("end")) }
         paths.size
     }
 
     part2(expectedExampleOutput = 36, expectedOutput = 91533) {
-        val group: Map<Cave, List<Cave>> = getConnections()
+        val group: Map<Cave, List<Cave>> = input.getConnections()
         val paths = buildPath(group, listOf(Cave("start")), false).filter { it.contains(Cave("end")) }
         paths.size
     }

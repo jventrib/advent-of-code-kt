@@ -4,16 +4,16 @@ import kotlin.math.ceil
 val day18 = day<Int>(18) {
     part1(expectedExampleOutput = 4140, expectedOutput = 3411) {
         val result =
-            this.map { SFNumber.parse(it) }.reduce { acc: SFPair, e: SFNumber -> acc + e }
+            input.map { SFNumber.parse(it) }.reduce { acc: SFPair, e: SFNumber -> acc + e }
 
         result.magnitude()
 
     }
 
     part2(expectedExampleOutput = 3993, expectedOutput = 4680) {
-        this.map { SFNumber.parse(it) }
-        val sums = this.flatMap { a ->
-            this.map { b ->
+        input.map { SFNumber.parse(it) }
+        val sums = input.flatMap { a ->
+            input.map { b ->
                 SFNumber.parse(a) + SFNumber.parse(b)
             }
         }

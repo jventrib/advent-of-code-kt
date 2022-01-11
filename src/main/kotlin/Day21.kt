@@ -1,15 +1,15 @@
 val day21 = day<Long>(21) {
     part1(expectedExampleOutput = 739785, expectedOutput = 720750) {
-        val player1 = first().substringAfter("Player 1 starting position: ").toInt()
-        val player2 = last().substringAfter("Player 2 starting position: ").toInt()
+        val player1 = input.first().substringAfter("Player 1 starting position: ").toInt()
+        val player2 = input.last().substringAfter("Player 2 starting position: ").toInt()
 
         val result = playGame(player1, player2)
         result
     }
 
     part2(expectedExampleOutput = 444356092776315, expectedOutput = 275067741811212) {
-        val player1 = first().substringAfter("Player 1 starting position: ").toInt()
-        val player2 = last().substringAfter("Player 2 starting position: ").toInt()
+        val player1 = input.first().substringAfter("Player 1 starting position: ").toInt()
+        val player2 = input.last().substringAfter("Player 2 starting position: ").toInt()
         val wins = playGame2(Round(player1, 0, player2, 0))
 
         maxOf(wins.p1, wins.p2)

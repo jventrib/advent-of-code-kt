@@ -1,9 +1,10 @@
 import java.util.*
+
 typealias SegmentSet = EnumSet<Segment>
 
 val day08 = day<Int>(8) {
     part1(expectedExampleOutput = 26, expectedOutput = 255) {
-        val entries = map { l ->
+        val entries = input.map { l ->
             l.split("|").let { Entry(it.first().trim().split(" "), it.last().trim().split(" ")) }
         }
 
@@ -14,10 +15,9 @@ val day08 = day<Int>(8) {
     }
 
     part2(expectedExampleOutput = 61229, expectedOutput = 982158) {
-        val entries = this
-            .map { l ->
-                l.split("|").let { Entry(it.first().trim().split(" "), it.last().trim().split(" ")) }
-            }
+        val entries = input.map { l ->
+            l.split("|").let { Entry(it.first().trim().split(" "), it.last().trim().split(" ")) }
+        }
 
         val linesSums = entries.map { entry ->
             val segmentsMapping = getSegments(entry)
@@ -36,7 +36,7 @@ val day08 = day<Int>(8) {
 private fun getSegments(entry: Entry): List<SegmentSet> {
     val signalsByLength: Map<Int, List<SegmentSet>> =
         entry.signals.groupBy { it.length }.mapValues { it.value.map { it.enumSet() } }
-    val s = MutableList<SegmentSet>(10) { EnumSet.noneOf(Segment::class.java)}
+    val s = MutableList<SegmentSet>(10) { EnumSet.noneOf(Segment::class.java) }
     s[1] = signalsByLength[2]!!.first()
     s[4] = signalsByLength[4]!!.first()
     s[7] = signalsByLength[3]!!.first()

@@ -1,15 +1,15 @@
 val day13 = day<Int>(13) {
     part1(expectedExampleOutput = 17, expectedOutput = 807) {
-        val points = getPoints()
-        val folds = getFolds()
+        val points = input.getPoints()
+        val folds = input.getFolds()
 
         val result = getFoldedPoints(points, folds[0])
         result.size
     }
 
     part2(expectedExampleOutput = 16, expectedOutput = 98) {
-        val points = getPoints()
-        val folds = getFolds()
+        val points = input.getPoints()
+        val folds = input.getFolds()
 
         val result = folds.fold(points, ::getFoldedPoints)
         result.draw(result.maxOf { it.x }, result.maxOf { it.y })

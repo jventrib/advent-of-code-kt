@@ -1,6 +1,6 @@
 val day25 = day<Int>(25) {
     part1(expectedExampleOutput = 58, expectedOutput = 474) {
-        val w = World(this)
+        val w = World(input)
         var count = 1
         while(w.doStep()) {
 //            w.draw()

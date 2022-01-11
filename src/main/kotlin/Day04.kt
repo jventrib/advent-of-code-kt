@@ -2,8 +2,8 @@ import java.util.regex.Pattern
 
 val day04 = day<Int>(4) {
     part1(4512) {
-        val numbers = initNumbers()
-        val boards = initBoards()
+        val numbers = input.initNumbers()
+        val boards = input.initBoards()
 
         //run the game
         val (number, winner) = numbers.firstNotNullOf { number ->
@@ -18,8 +18,8 @@ val day04 = day<Int>(4) {
     }
 
     part2(1924) {
-        val numbers = initNumbers()
-        val boards = initBoards()
+        val numbers = input.initNumbers()
+        val boards = input.initBoards()
 
         //run the game
         val winners = numbers.map { number -> //Look for a winner

@@ -1,10 +1,10 @@
 val day20 = day<Int>(20) {
     part1(expectedExampleOutput = 35, expectedOutput = 5349) {
-        doPart(2)
+        input.doPart(2)
     }
 
     part2(expectedExampleOutput = 3351, expectedOutput = 15806) {
-        doPart(50)
+        input.doPart(50)
     }
 }
 
@@ -16,7 +16,7 @@ private fun List<String>.doPart(step: Int): Int {
         acc.processImage(enhancement)
     }
 
-    finalImage.draw()
+//    finalImage.draw()
     return finalImage.pixels.flatten().count { it == '#' }
 }
 
