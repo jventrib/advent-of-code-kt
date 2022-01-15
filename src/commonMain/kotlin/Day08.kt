@@ -26,7 +26,7 @@ val day08 = day<Int>(8) {
                     segmentsMapping.indexOfFirst { outputNumber.size == it.size && outputNumber.containsAll(it) }
                 }
         }.map {
-            it.joinToString("") { it.toString() }.toInt()
+            it.joinToString("", transform = Int::toString).toInt()
         }
         linesSums.sum()
     }
@@ -34,7 +34,7 @@ val day08 = day<Int>(8) {
 
 private fun getSegments(entry: Entry): List<SegmentSet> {
     val signalsByLength: Map<Int, List<SegmentSet>> =
-        entry.signals.groupBy { it.length }.mapValues { it.value.map { it.enumSet() } }
+        entry.signals.groupBy { it.length }.mapValues { it.value.map(String::enumSet) }
     val s = MutableList<SegmentSet>(10) { setOf() }
     s[1] = signalsByLength[2]!!.first()
     s[4] = signalsByLength[4]!!.first()
@@ -58,8 +58,6 @@ private fun List<SegmentSet>?.filterContains(s1: SegmentSet?): List<SegmentSet> 
 
 private fun List<SegmentSet>?.filterNotContains(s1: SegmentSet?): List<SegmentSet> =
     this!!.filterNot { c -> c.containsAll(s1!!) }
-
-private fun Map<Int, List<SegmentSet>>.g(key: Int) = this[key]!!
 
 data class Entry(val signals: List<String>, val output: List<String>)
 enum class Segment { A, B, C, D, E, F, G }

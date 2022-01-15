@@ -1,7 +1,7 @@
 val day17 = day<Int>(17) {
     part1(expectedExampleOutput = 45, expectedOutput = 25200) {
         val hits = input.fireProbes()
-        val winner = hits.maxByOrNull { it.trajectory.maxOf { it.pos.y } }
+        val winner = hits.maxByOrNull { shot -> shot.trajectory.maxOf { it.pos.y } }
 //        draw(winner!!, target)
         val maxY = winner!!.trajectory.maxOf { it.pos.y }
         println("Winner -> maxY:$maxY, trajectory: ${winner.trajectory.first().velocity}")
@@ -53,6 +53,7 @@ private fun handleSpeedX(acc: Probe) =
         else -> acc.velocity.x
     }
 
+@Suppress("unused")
 private fun draw(shots: List<Shot>, target: Rect) {
     println()
 //    val trajectory = shot.trajectory

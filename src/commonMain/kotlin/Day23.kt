@@ -26,7 +26,7 @@ private fun solve(list: List<String>): Int {
     val solutions = mutableListOf<Step>()
     val totals = mutableMapOf<String, Int>().withDefault { Int.MAX_VALUE }
     var i = 0
-    while (queue.isNotEmpty()) {
+    while (!queue.isEmpty()) {
         val nextStates = mutableListOf<Step>()
         val current = queue.poll()
         val nextSteps = current.amphipods

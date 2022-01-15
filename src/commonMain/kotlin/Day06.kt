@@ -11,7 +11,7 @@ val day06 = day<Long>(6) {
 private fun List<String>.doPart(days: Int): Long {
     val inputCounts = first().split(",").map(String::toInt).groupingBy { it }.eachCount()
     val initialCount = (0..8).map { inputCounts[it]?.toLong() ?: 0L }
-    return (1..days).fold(initialCount) { count, day ->
+    return (1..days).fold(initialCount) { count, _ ->
         (count.drop(1) + count.take(1)).mapIndexed { i, e -> if (i == 6) e + count.first() else e }
     }.sum()
 }

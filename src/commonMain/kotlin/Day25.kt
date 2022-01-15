@@ -2,7 +2,7 @@ val day25 = day<Int>(25) {
     part1(expectedExampleOutput = 58, expectedOutput = 474) {
         val w = World(input)
         var count = 1
-        while(w.doStep()) {
+        while (w.doStep()) {
 //            w.draw()
             count++
         }
@@ -60,6 +60,7 @@ class World(input: List<String>) {
     private fun Int.right() = (this + 1).mod(width)
     private fun Int.bellow() = (this + 1).mod(height)
 
+    @Suppress("unused")
     fun draw() {
         println()
         grid.forEach { l ->

@@ -50,7 +50,7 @@ private fun doPart(
     var cur: MPoint? = null
     val start = getMillis()
 
-    while (queue.isNotEmpty()) {
+    while (!queue.isEmpty()) {
         cur = queue.poll()
         if (cur == MPoint(width - 1, height - 1)) break
         if (cur !in path) {
@@ -71,7 +71,6 @@ private fun doPart(
     println("Dijkstra time: $chrono ms")
     return cur!!.dist
 }
-
 
 
 data class MPoint(val x: Int, val y: Int) : Comparable<MPoint> {

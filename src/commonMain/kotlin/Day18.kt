@@ -139,9 +139,7 @@ sealed class SFNumber {
                 return sfPair
             }
 
-            val sfRegular = SFRegular(pairString.toInt())
-
-            return sfRegular
+            return SFRegular(pairString.toInt())
         }
     }
 }

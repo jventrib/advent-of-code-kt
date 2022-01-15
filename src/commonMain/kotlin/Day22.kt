@@ -73,10 +73,7 @@ data class Reactor(val cuboids: List<Cuboid>) {
         if (cuboid.on) volumes + intersections + cuboid else volumes + intersections
     }.sumOf { it.onCubes() }
 
-    private fun getIntersections(cuboids: List<Cuboid>, cuboid: Cuboid): List<Cuboid> {
-        val intersections = cuboids
-            .filter { (cuboid int it).onCubes() != 0L }
-            .map { it int cuboid }
-        return intersections
-    }
+    private fun getIntersections(cuboids: List<Cuboid>, cuboid: Cuboid) = cuboids
+        .filter { (cuboid int it).onCubes() != 0L }
+        .map { it int cuboid }
 }

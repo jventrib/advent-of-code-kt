@@ -3,8 +3,8 @@ import kotlin.test.assertEquals
 
 class Tests {
 
-    val day = day03
-    
+    private val day = day03
+
     @Test
     fun todayPart1Example() {
         doPart1Example(day)
@@ -72,10 +72,7 @@ private fun <E> dayPartTest(d: Day<E>, example: Boolean, part: Day<E>.() -> Part
     println("output: $output")
     println("time: ${elapsed}ms")
 
-    if (d.part().expected != null)
-        assertEquals(d.part().expected, output)
-    else
-        output
+    assertEquals(d.part().expected, output)
 }
 
 fun <E> dayTest(d: Day<E>, withExample: Boolean = true) {
@@ -84,6 +81,4 @@ fun <E> dayTest(d: Day<E>, withExample: Boolean = true) {
     if (withExample) doPart2Example(d)
     doPart2(d)
 }
-
-private fun Int.pad() = this.toString().padStart(2, '0')
 

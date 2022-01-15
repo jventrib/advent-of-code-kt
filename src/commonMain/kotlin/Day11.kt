@@ -46,7 +46,7 @@ private fun doStep(
     var flashCount = 0
     matrix.forEach { y, x -> matrix[y][x] = matrix[y][x] + 1 }
     do {
-        val tmpMatrix = (0 until height).map { _ -> (0 until width).map { 0 }.toMutableList() }.toMutableList()
+        val tmpMatrix = (0 until height).map { (0 until width).map { 0 }.toMutableList() }.toMutableList()
         matrix.forEach { y, x ->
             if (matrix[y][x] == 10) {
                 flashCount++
@@ -78,9 +78,7 @@ private fun doStep(
 
 private fun MutableList<MutableList<Int>>.forEach(block: (Int, Int) -> Unit) {
     forEachIndexed { y, lines ->
-        lines.forEachIndexed { x, v ->
-            block(y, x)
-        }
+        lines.indices.forEach { x -> block(y, x) }
     }
 }
 

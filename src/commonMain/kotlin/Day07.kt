@@ -1,5 +1,4 @@
 import kotlin.math.abs
-import kotlin.math.absoluteValue
 
 val day07 = day<Int>(7) {
     part1(expectedExampleOutput = 37, expectedOutput = 344535) {

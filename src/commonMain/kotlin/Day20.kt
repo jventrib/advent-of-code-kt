@@ -62,6 +62,7 @@ class Image(val pixels: List<List<Char>>, private val infinitePixel: Char = '.')
 
     private fun pixel(y: Int, x: Int) = pixels.getOrNull(y)?.getOrNull(x) ?: infinitePixel
 
+    @Suppress("unused")
     fun draw() {
         val margin = 1
         val width = pixels.maxOf { it.size } * margin

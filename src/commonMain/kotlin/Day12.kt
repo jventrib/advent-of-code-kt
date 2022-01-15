@@ -31,7 +31,7 @@ private fun List<String>.getConnections(): Map<Cave, List<Cave>> {
         }
     }
 
-    return connections.groupBy { it.first }.mapValues { it.value.map { it.second } }
+    return connections.groupBy { it.first }.mapValues { entry -> entry.value.map { it.second } }
 }
 
 

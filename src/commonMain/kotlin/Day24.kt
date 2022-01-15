@@ -84,43 +84,46 @@ private fun List<String>.doPart(part1: Boolean): Long {
 data class Param(val check: Int, val offset: Int)
 
 class ALU(instStrings: List<String>) {
-    private val insts: List<() -> Unit>
+    private val instructions: List<() -> Unit>
     private lateinit var inputList: ListIterator<Long>
 
     private val cache = mutableMapOf<Int, MutableMap<Long, Long>>()
 
     init {
-        this.insts = instStrings.map { it.split(" ") }.map { parseInst(it) }
+        this.instructions = instStrings.map { it.split(" ") }.map { parseInst(it) }
     }
 
     fun run(input: Long): Long {
         reset()
         inputList = input.toString().toCharArray().map { it.digitToInt().toLong() }.listIterator()
-        insts.chunked(18).forEachIndexed { index, segment ->
-            inp(Operand.Variable(w, this))()
-            val wVal = memory.getValue(w)
+        instructions.chunked(18).forEachIndexed { index, segment ->
+            inp(Operand.Variable(W, this))()
+            val wVal = memory.getValue(W)
             val cached = cache[index]?.get(wVal)
             if (cached != null) {
-                memory[z] = cached
+                memory[Z] = cached
             } else {
                 segment.drop(1).forEach { it() }
-                cache.getOrPut(index) { mutableMapOf() }[wVal] = memory.getValue(z)
+                cache.getOrPut(index) { mutableMapOf() }[wVal] = memory.getValue(Z)
             }
         }
-        return memory.getValue(z)
+        return memory.getValue(Z)
     }
 
     private fun reset() {
-        memory[w] = 0
-        memory[x] = 0
-        memory[y] = 0
-        memory[z] = 0
+        memory[W] = 0
+        memory[X] = 0
+        memory[Y] = 0
+        memory[Z] = 0
     }
 
     private fun parseInst(line: List<String>): () -> Unit {
         fun parseOperand(i: Int): Operand {
             val value = line[i]
-            return value.toLongOrNull()?.let { Operand.Literal(it) } ?: Operand.Variable(valueOf(value), this)
+            return value.toLongOrNull()?.let { Operand.Literal(it) } ?: Operand.Variable(
+                valueOf(value.uppercase()),
+                this
+            )
         }
 
         return when (line[0]) {
@@ -134,16 +137,16 @@ class ALU(instStrings: List<String>) {
         }
     }
 
-    enum class VarName { w, x, y, z }
+    enum class VarName { W, X, Y, Z }
 
     val memory = mutableMapOf(
-        w to 0L,
-        x to 0L,
-        y to 0L,
-        z to 0L,
+        W to 0L,
+        X to 0L,
+        Y to 0L,
+        Z to 0L,
     )
 
-    private fun Map<VarName, Long>.show() = "w:${this[w]}, x:${this[x]}, y:${this[y]}, z:${this[z]}"
+    private fun Map<VarName, Long>.show() = "w:${this[W]}, x:${this[X]}, y:${this[Y]}, z:${this[Z]}"
 
 
     private fun inp(v: Operand.Variable): () -> Unit = {
@@ -176,7 +179,7 @@ class ALU(instStrings: List<String>) {
         fun getValue(): Long
         fun setValue(i: Long)
 
-        class Literal(val v: Long) : Operand {
+        class Literal(private val v: Long) : Operand {
             override fun getValue() = v
             override fun setValue(i: Long) {
                 error("cannot set literal value")
@@ -194,43 +197,3 @@ class ALU(instStrings: List<String>) {
 }
 
 
-private fun getMagicParameters(input: List<String>): List<Parameters> = parseMagicParameters(input)
-
-private class Parameters(val a: Int, val b: Int, val c: Int)
-
-private fun parseMagicParameters(input: List<String>): List<Parameters> =
-    input.chunked(18).map {
-        Parameters(
-            it[4].substringAfterLast(" ").toInt(),
-            it[5].substringAfterLast(" ").toInt(),
-            it[15].substringAfterLast(" ").toInt()
-        )
-    }
-
-
-private fun magicFunction(parameters: Parameters, z: Long, w: Long): Long =
-    if (z % 26 + parameters.b != w) ((z / parameters.a) * 26) + w + parameters.c
-    else z / parameters.a
-
-
-private fun solve(input: List<String>): Pair<Long, Long> {
-    var zValues = mutableMapOf(0L to (0L to 0L))
-    getMagicParameters(input).forEach { parameters ->
-        val zValuesThisRound = mutableMapOf<Long, Pair<Long, Long>>()
-        zValues.forEach { (z, minMax) ->
-            (1..9).forEach { digit ->
-                val newValueForZ = magicFunction(parameters, z, digit.toLong())
-                if (parameters.a == 1 || (parameters.a == 26 && newValueForZ < z)) {
-                    zValuesThisRound[newValueForZ] =
-                        minOf(zValuesThisRound[newValueForZ]?.first ?: Long.MAX_VALUE, minMax.first * 10 + digit) to
-                                maxOf(
-                                    zValuesThisRound[newValueForZ]?.second ?: Long.MIN_VALUE,
-                                    minMax.second * 10 + digit
-                                )
-                }
-            }
-        }
-        zValues = zValuesThisRound
-    }
-    return zValues.getValue(0)
-}

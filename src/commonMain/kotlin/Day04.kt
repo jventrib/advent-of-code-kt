@@ -1,6 +1,5 @@
-
 val day04 = day<Int>(4) {
-    part1(4512) {
+    part1(expectedExampleOutput = 4512, expectedOutput = 58374) {
         val numbers = input.initNumbers()
         val boards = input.initBoards()
 
@@ -16,7 +15,7 @@ val day04 = day<Int>(4) {
         unmarked * number
     }
 
-    part2(1924) {
+    part2(expectedExampleOutput = 1924, expectedOutput = 11377) {
         val numbers = input.initNumbers()
         val boards = input.initBoards()
 

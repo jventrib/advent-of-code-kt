@@ -1,3 +1,9 @@
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.DEFAULT_CONCURRENCY
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.runBlocking
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.cos
@@ -114,9 +120,9 @@ data class Scanner(
 
     private fun checkWith(other: Scanner): Scanner? {
         println("Checking Scanner $this with $other")
-        val scannerTransformation = run {
-            orientations
-                .map { m ->
+        val scannerTransformation = runBlocking {
+            orientations.asFlow()
+                .concurrentMap(Dispatchers.Default, DEFAULT_CONCURRENCY) { m ->
                     m to getScannerPositionForOrientation(m, other)
                 }
                 .firstOrNull { it.second != null }
