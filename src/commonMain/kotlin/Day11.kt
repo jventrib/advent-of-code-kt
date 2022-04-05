@@ -2,20 +2,22 @@ val day11 = day<Int>(11) {
     part1(expectedExampleOutput = 1656, expectedOutput = 1637) {
 
         val matrix: MutableList<MutableList<Int>> = input.map {
-            it.map(Char::digitToInt).toMutableList()
+            it.toCharArray().toList().map(Char::digitToInt).toMutableList()
         }.toMutableList()
         val height = matrix.size
         val width = matrix.maxOf { it.size }
 
-        val flashCount = (1..100).fold(0) { acc, step -> //TODO immutable style
-            acc + doStep(matrix, height, width, step)
+        var flashCount = 0
+        (1..100).forEach { step ->
+            flashCount += doStep(matrix, height, width, step)
+
         }
         flashCount
     }
 
     part2(expectedExampleOutput = 195, expectedOutput = 242) {
         val matrix: MutableList<MutableList<Int>> = input.map {
-            it.map(Char::digitToInt).toMutableList()
+            it.toCharArray().toList().map(Char::digitToInt).toMutableList()
         }.toMutableList()
 
         val height = matrix.size
@@ -44,11 +46,8 @@ private fun doStep(
     var flashCount = 0
     matrix.forEach { y, x -> matrix[y][x] = matrix[y][x] + 1 }
     do {
-        val tmpMatrix = (0 until height)
-            .map {
-                (0 until width).map { 0 }.toMutableList()
-            }.toMutableList()
-        matrix.forEach { y, x -> //TODO extension function
+        val tmpMatrix = (0 until height).map { (0 until width).map { 0 }.toMutableList() }.toMutableList()
+        matrix.forEach { y, x ->
             if (matrix[y][x] == 10) {
                 flashCount++
                 addFlash(x - 1, y - 1, width, height, tmpMatrix)
@@ -100,5 +99,3 @@ private fun addFlash(
     if (x in (0 until width) && y in (0 until height)) tmpMatrix[y][x]++
 
 }
-
-data class Step11(val matrix: MutableList<MutableList<Int>>, val flashCount: Int)

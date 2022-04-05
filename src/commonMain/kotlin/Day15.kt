@@ -1,9 +1,9 @@
+
 val day15 = day<Int>(15) {
     part1(expectedExampleOutput = 40, expectedOutput = 621) {
         val points = input.mapIndexed { y, line ->
-            line.mapIndexed { x, c ->
+            line.toCharArray().mapIndexed { x, c ->
                 MPoint(x, y).apply {
-                    //TODO scope function
                     risk = c.digitToInt()
                     dist = Int.MAX_VALUE
                 }
@@ -21,7 +21,7 @@ val day15 = day<Int>(15) {
         val points = (0 until 5).flatMap { yTime ->
             input.mapIndexed { y, line ->
                 (0 until 5).flatMap { xTime ->
-                    line.mapIndexed { x, c ->
+                    line.toCharArray().mapIndexed { x, c ->
                         MPoint(x + tileWidth * xTime, y + tileHeight * yTime).apply {
                             risk = (c.digitToInt() + yTime + xTime).run { if (this > 9) this - 9 else this }
                             dist = Int.MAX_VALUE
@@ -43,10 +43,11 @@ private fun doPart(
     height: Int
 ): Int {
     val path = mutableSetOf<MPoint>()
-    val queue = PriorityQueue<MPoint>(100) //TODO Java interop
+    val queue = PriorityQueue<MPoint>(100)
     queue.add(points.flatten().first().apply { dist = 0 })
 
-    var cur = MPoint(0, 0)
+    // Iterations
+    var cur: MPoint? = null
     val start = getMillis()
 
     while (!queue.isEmpty()) {
@@ -54,9 +55,11 @@ private fun doPart(
         if (cur == MPoint(width - 1, height - 1)) break
         if (cur !in path) {
             path.add(cur)
-            cur.neighborsIn(points)
+//            val list = neighbors[cur.y][cur.x]
+            val list = cur.neighborsIn(points)
+            list
                 .forEach { n ->
-                    if (cur.dist < Int.MAX_VALUE && cur.dist + n.risk < n.dist) {
+                    if (cur.dist < Int.MAX_VALUE && n.dist > cur.dist + n.risk) {
                         n.dist = cur.dist + n.risk
                         queue.add(n)
                     }
@@ -66,11 +69,11 @@ private fun doPart(
 
     val chrono = getMillis() - start
     println("Dijkstra time: $chrono ms")
-    return cur.dist
+    return cur!!.dist
 }
 
 
-data class MPoint(val x: Int, val y: Int) : Comparable<MPoint> { //TODO data class
+data class MPoint(val x: Int, val y: Int) : Comparable<MPoint> {
     var risk: Int = 0
     var dist: Int = 0
     fun neighborsIn(points: List<List<MPoint>>) = listOfNotNull(
@@ -85,5 +88,7 @@ data class MPoint(val x: Int, val y: Int) : Comparable<MPoint> { //TODO data cla
     }
 
     override fun compareTo(other: MPoint) = compareBy<MPoint> { it.dist }.compare(this, other)
+
+
 }
 

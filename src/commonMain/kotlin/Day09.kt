@@ -1,6 +1,6 @@
 val day09 = day<Int>(9) {
     part1(expectedExampleOutput = 15, expectedOutput = 560) {
-        val matrix = input.map { it.map(Char::digitToInt) }
+        val matrix = input.map { it.toCharArray().toList().map(Char::digitToInt) }
         val width = matrix.maxOf { it.size }
         val height = matrix.size
         val lowPoints = getLowPoints(matrix, width, height)
@@ -8,7 +8,7 @@ val day09 = day<Int>(9) {
     }
 
     part2(expectedExampleOutput = 1134, expectedOutput = 959136) {
-        val matrix = input.map { it.map(Char::digitToInt) }
+        val matrix = input.map { it.toCharArray().toList().map(Char::digitToInt) }
         val width = matrix.maxOf { it.size }
         val height = matrix.size
         val basins = getLowPoints(matrix, width, height).map { lowPoint ->
@@ -20,6 +20,7 @@ val day09 = day<Int>(9) {
 }
 
 private fun fillBasin(basin: Basin, matrix: List<List<Int>>, width: Int, height: Int): Basin {
+    val oldSize = basin.points.size
     val newPoints = basin.points.fold(basin.points) { acc, point ->
         val newInBasin = getNeighbors(matrix, width, height, point.x, point.y)
             .filter { n -> n.value != 9 }
@@ -27,7 +28,6 @@ private fun fillBasin(basin: Basin, matrix: List<List<Int>>, width: Int, height:
     }
     val newBasin = basin.copy(points = newPoints)
 //    println("basin(${newBasin.points.size}): $newBasin")
-    val oldSize = basin.points.size
     return if (newPoints.size != oldSize) fillBasin(newBasin, matrix, width, height) else newBasin
 }
 
