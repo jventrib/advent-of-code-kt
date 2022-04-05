@@ -53,11 +53,11 @@ private fun getSegments(entry: Entry): List<SegmentSet> {
 
 private fun String.enumSet() = map { Segment.valueOf(it.uppercase()) }.toSet()
 
-private fun List<SegmentSet>?.filterContains(s1: SegmentSet?): List<SegmentSet> =
-    this!!.filter { c -> c.containsAll(s1!!) }
+private fun List<SegmentSet>?.filterContains(s1: SegmentSet): List<SegmentSet> =
+    this!!.filter { c -> c.containsAll(s1) }
 
-private fun List<SegmentSet>?.filterNotContains(s1: SegmentSet?): List<SegmentSet> =
-    this!!.filterNot { c -> c.containsAll(s1!!) }
+private fun List<SegmentSet>?.filterNotContains(s1: SegmentSet): List<SegmentSet> =
+    this!!.filterNot { c -> c.containsAll(s1) }
 
 data class Entry(val signals: List<String>, val output: List<String>)
 enum class Segment { A, B, C, D, E, F, G }

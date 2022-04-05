@@ -1,3 +1,5 @@
+import kotlinx.coroutines.delay
+
 val day13 = day<Int>(13) {
     part1(expectedExampleOutput = 17, expectedOutput = 807) {
         val points = input.getPoints()
@@ -20,28 +22,37 @@ val day13 = day<Int>(13) {
 private fun List<String>.getFolds() = this
     .filter { it.startsWith("fold") }
     .map { it.substringAfter(" ").substringAfter(" ").split("=") }
-    .map { it.first() to it.last().toInt() }
+    .map { Fold(it.first(), it.last().toInt()) }
 
 private fun List<String>.getPoints() = this
     .filter { it.contains(",") }
     .map { it.split(",") }
-    .map { Point(it.first().toInt(), it.last().toInt()) }.toSet()
+    .map { Point(it.first().toInt(), it.last().toInt()) }
 
 private fun Iterable<Point>.draw(width: Int, height: Int) {
     (0..height).forEach { y ->
         val line = (0..width).joinToString("") { x ->
-            this.firstOrNull { it == Point(x, y) }?.let { "██" } ?: "  " // double char for clarity
+            this.firstOrNull { it == Point(x, y) }?.let { "OO" } ?: "  " // double char for clarity
         }
         println(line)
     }
 }
 
 private fun getFoldedPoints(
-    points: Set<Point>,
-    foldPoint: Pair<String, Int>
-) = foldPoint.second.let { foldPos ->
+    points: List<Point>,
+    foldPoint: Fold
+) = foldPoint.pos.let { foldPos ->
     points.map {
-        if (foldPoint.first == "x") Point(if (it.x > foldPos) (2 * foldPos - it.x) else it.x, it.y)
+        if (foldPoint.dir == "x") Point(if (it.x > foldPos) (2 * foldPos - it.x) else it.x, it.y)
         else Point(it.x, if (it.y > foldPos) (2 * foldPos - it.y) else it.y)
-    }.toSet()
+    }.distinct()
+//        .apply {
+//            println()
+//            println()
+//            draw(maxOf { it.x }, maxOf { it.y })
+//            println()
+//            println()
+//        }
 }
+
+data class Fold(val dir: String, val pos: Int)

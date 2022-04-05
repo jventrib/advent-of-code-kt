@@ -118,7 +118,7 @@ sealed class Packet(val header: Header, val input: String) {
     }
 }
 
-private fun String.bin() = this.toCharArray().joinToString("") { hexToBin.getValue(it) }
+private fun String.bin(): String = this.map { hexToBin.getValue(it) }.joinToString("")
 
 val hexToBin = mapOf(
     '0' to "0000",

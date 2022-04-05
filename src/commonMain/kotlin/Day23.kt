@@ -115,7 +115,7 @@ data class Step(val amphipods: Set<Amphipod>, private var prev: Step?, var energ
 
     override fun compareTo(other: Step) = compareBy<Step> { it.energy }.compare(this, other)
 
-    companion object {
+    companion object { //TODO companion object
         fun fromInput(input: List<String>): Step {
             fun getAmphipods(): Set<Amphipod> {
                 val line = input.flatMapIndexed { y: Int, s: String ->
@@ -181,7 +181,7 @@ data class Amphipod(val type: AmphipodType, val pos: Pos, val energy: Int = 0, v
 
     private fun MutableSet<Step>.addStepWithNewPos(x: Int, y: Int, done: Boolean = false) {
         val amphipods = newPos(this@Amphipod, x, y, if (done) true else this@Amphipod.done)
-        add(step.copy(amphipods = amphipods, prev = step, energy = amphipods.sumOf { it.energy }))
+        add(step.copy(amphipods = amphipods, prev = step, energy = amphipods.sumOf { it.energy })) //TODO copy
     }
 
     private fun newPos(amphipod: Amphipod, x: Int, y: Int, done: Boolean): Set<Amphipod> {
