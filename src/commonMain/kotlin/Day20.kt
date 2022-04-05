@@ -21,10 +21,7 @@ private fun List<String>.doPart(step: Int): Int {
 }
 
 private fun List<String>.getInput(): Image {
-    val image = Image(this.dropWhile { it.isNotEmpty() }.drop(1).map { line ->
-        line.toCharArray().toList()
-    })
-    return image
+    return Image(dropWhile { it.isNotEmpty() }.drop(1).map { line -> line.toList() })
 }
 
 class Image(val pixels: List<List<Char>>, private val infinitePixel: Char = '.') {
