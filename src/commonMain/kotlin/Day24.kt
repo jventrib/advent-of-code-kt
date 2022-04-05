@@ -95,7 +95,7 @@ class ALU(instStrings: List<String>) {
 
     fun run(input: Long): Long {
         reset()
-        inputList = input.toString().toCharArray().map { it.digitToInt().toLong() }.listIterator()
+        inputList = input.toString().map { it.digitToInt().toLong() }.listIterator()
         instructions.chunked(18).forEachIndexed { index, segment ->
             inp(Operand.Variable(W, this))()
             val wVal = memory.getValue(W)
