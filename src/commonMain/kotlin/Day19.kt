@@ -1,5 +1,4 @@
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.DEFAULT_CONCURRENCY
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.firstOrNull
@@ -12,7 +11,7 @@ import kotlin.math.sin
 val day19 = day<Int>(19) {
     part1(expectedExampleOutput = 79, expectedOutput = 392) {
         val allScanners = input.getScanners()
-        val allBeacons = allScanners.flatMap { it.fromScanner0Beacons }.distinct().sorted()
+        val allBeacons = allScanners.flatMap { it.fromScanner0Beacons }.distinct()
         allBeacons.size
     }
 
@@ -23,13 +22,12 @@ val day19 = day<Int>(19) {
                 allScanners.filter { sb -> sa != sb }
                     .map { sb -> sa.transformation!!.translation to sb.transformation!!.translation }
             }
-            .map { abs(it.second.x - it.first.x) + abs(it.second.y - it.first.y) + abs(it.second.z - it.first.z) }
+            .map { it.first.manathanDist(it.second) }
             .maxOf { it }
         maxDist
-
-
     }
 }
+
 
 private fun List<String>.getScanners(): List<Scanner> {
     val allScanners = this.fold(listOf<Scanner>()) { acc, s ->
@@ -38,7 +36,7 @@ private fun List<String>.getScanners(): List<Scanner> {
                 val number = s.substringAfter("scanner ").substringBefore(" ---").toInt()
                 acc + Scanner(
                     number,
-                    acc.firstOrNull(),
+                    acc.firstOrNull(), // scanner0
                     listOf()
                 )
             }
@@ -60,35 +58,6 @@ private fun List<String>.getScanners(): List<Scanner> {
     return allScanners
 }
 
-val orientations = Matrix3.identity().let {
-    listOf(
-        it,
-        it.rotX(90),
-        it.rotX(180),
-        it.rotX(-90),
-        it.rotY(90),
-        it.rotY(180),
-        it.rotY(-90),
-        it.rotZ(90),
-        it.rotZ(180),
-        it.rotZ(-90),
-        it.rotX(90).rotY(90),
-        it.rotX(90).rotY(180),
-        it.rotX(90).rotY(-90),
-        it.rotX(90).rotZ(90),
-        it.rotX(90).rotZ(180),
-        it.rotX(90).rotZ(-90),
-        it.rotX(180).rotY(90),
-        it.rotX(180).rotY(-90),
-        it.rotX(180).rotZ(90),
-        it.rotX(180).rotZ(-90),
-        it.rotX(-90).rotY(90),
-        it.rotX(-90).rotY(-90),
-        it.rotX(-90).rotZ(90),
-        it.rotX(-90).rotZ(-90),
-    )
-}
-
 data class Point3d(val x: Int, val y: Int, val z: Int) : Comparable<Point3d> {
     operator fun plus(other: Point3d) = Point3d(x + other.x, y + other.y, z + other.z)
 
@@ -98,6 +67,10 @@ data class Point3d(val x: Int, val y: Int, val z: Int) : Comparable<Point3d> {
 
     override fun compareTo(other: Point3d) =
         compareBy<Point3d> { it.x }.thenBy { it.y }.thenBy { it.z }.compare(this, other)
+
+    fun manathanDist(other: Point3d) =
+        abs(other.x - this.x) + abs(other.y - this.y) + abs(other.z - this.z)
+
 }
 
 data class Scanner(
@@ -109,12 +82,11 @@ data class Scanner(
     var transformation: Transformation? = null
 
     fun findOverlappingScanners(allScanners: List<Scanner>) {
-        if (allScanners.all { it.transformation != null }) return
         val scs = allScanners
             .filter { it.number != this.number }
             .filter { it.transformation == null }
             .mapNotNull { it.checkWith(this) }
-        if (scs.isEmpty() || allScanners.all { it.transformation != null }) return
+        if (scs.isEmpty()) return
         return scs.forEach { it.findOverlappingScanners(allScanners) }
     }
 
@@ -152,7 +124,7 @@ data class Scanner(
         return other.localBeacons
             .asSequence()
             .flatMap { p0 -> orientedPoints.map { p0 - it } }
-            .firstOrNull { d -> orientedPoints.count { o -> other.localBeacons.contains(o + d) } >= 12 }
+            .firstOrNull { d -> orientedPoints.count { o -> other.localBeacons.contains(o + d) } >= 3 }
     }
 
     override fun toString(): String {
@@ -239,5 +211,34 @@ data class Matrix3(
             0, 0, 1
         )
     }
+}
+
+val orientations = Matrix3.identity().let {
+    listOf(
+        it,
+        it.rotX(90),
+        it.rotX(180),
+        it.rotX(-90),
+        it.rotY(90),
+        it.rotY(180),
+        it.rotY(-90),
+        it.rotZ(90),
+        it.rotZ(180),
+        it.rotZ(-90),
+        it.rotX(90).rotY(90),
+        it.rotX(90).rotY(180),
+        it.rotX(90).rotY(-90),
+        it.rotX(90).rotZ(90),
+        it.rotX(90).rotZ(180),
+        it.rotX(90).rotZ(-90),
+        it.rotX(180).rotY(90),
+        it.rotX(180).rotY(-90),
+        it.rotX(180).rotZ(90),
+        it.rotX(180).rotZ(-90),
+        it.rotX(-90).rotY(90),
+        it.rotX(-90).rotY(-90),
+        it.rotX(-90).rotZ(90),
+        it.rotX(-90).rotZ(-90),
+    )
 }
 
