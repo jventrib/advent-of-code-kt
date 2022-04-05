@@ -15,8 +15,7 @@ val day10 = day<Long>(10) {
 
         val completionScores = notCorruptedLines.map { line ->
             val stack = ArrayDeque<Char>()
-            line.toCharArray()
-                .forEach { if (it in setOf('(', '{', '[', '<')) stack.addFirst(it) else stack.removeFirst() }
+            line.forEach { if (it in setOf('(', '{', '[', '<')) stack.addFirst(it) else stack.removeFirst() }
             val completion = stack.map { closing[it] }
             completion.fold(0L) { acc, c -> acc * 5 + score2[c]!! }
         }
@@ -26,7 +25,7 @@ val day10 = day<Long>(10) {
 
 private fun getCorruptedChar(line: String): Char? {
     val stack = ArrayDeque<Char>()
-    val corrupted = line.toCharArray().firstOrNull { c ->
+    val corrupted = line.firstOrNull { c ->
         if (c in setOf('(', '{', '[', '<')) {
             stack.addFirst(c)
             false
